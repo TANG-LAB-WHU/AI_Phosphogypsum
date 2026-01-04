@@ -1,0 +1,52 @@
+#### CIF created by Crystallographica 2 ####
+
+data_CalciumSulfateGamma
+
+_audit_creation_method                    'Crystallographica 2' 
+_cell_angle_alpha                         90 
+_cell_angle_beta                          90 
+_cell_angle_gamma                         120 
+_cell_formula_units_Z                     3 
+_cell_length_a                            6.99 
+_cell_length_b                            6.99 
+_cell_length_c                            6.34 
+_cell_volume                              268.271 
+_cgraph_comments                         'Kristallographische und roentgenometrische Untersuchungen 
+     im System Ca S O4 - Ca S O4 (H2 O)2
+'
+_cgraph_title                            'Calcium Sulfate - Gamma'
+_chemical_formula_sum                    'Ca S O4'
+_symmetry_space_group_name_H-M           'P 62 2 2'
+_symmetry_space_group_name_Hall          ' P 62 2c (0 0 1)'
+
+loop_
+        _symmetry_equiv_pos_as_xyz
+        'x, y, z'
+        'x-y, x, z+1/3'
+        '-y, x-y, z-1/3'
+        '-x, -y, z'
+        '-x+y, -x, z+1/3'
+        'y, -x+y, z-1/3'
+        'x-y, -y, -z'
+        '-x, -x+y, -z+1/3'
+        'y, x, -z-1/3'
+        '-y, -x, -z-1/3'
+        '-x+y, y, -z'
+        'x, x-y, -z+1/3'
+
+loop_
+        _atom_site_label
+        _atom_site_type_symbol
+        _atom_site_fract_x
+        _atom_site_fract_y
+        _atom_site_fract_z
+        _atom_site_U_iso_or_equiv
+        _atom_site_thermal_displace_type
+        _atom_site_occupancy
+        Ca1 Ca2+ 0.5 0 0 0 Uiso 1
+        S1 S 0.5 0 0.5 0 Uiso 1
+        O1 O2- 0.445 0.145 0.362 0 Uiso 1
+
+_eof
+
+#### End of Crystallographic Information File ####
