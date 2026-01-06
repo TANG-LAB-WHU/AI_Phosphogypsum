@@ -1,0 +1,1 @@
+python create_slab_from_cif.py --cif-input 1.1CSO-2H2O/conventional_cell.cif --miller 0 1 0 --layers 3 --vacuum 15.0
