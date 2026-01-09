@@ -1,0 +1,31 @@
+Product,Unit,Background life cycle inventory,Unit-cost,Source
+Activated carbon,€ kg-1,"market for activated carbon, granular, GLO",1.0,ref.2
+"Ammonium nitrate, as N",€ kg-1,urea ammonium nitrate production; RoW,0.61,ref.46
+CaCO3,€ kg-1,"market for calcium carbonate, precipitated, RoW",0.09,ref.47
+CaO,€ kg-1,"market for lime, RoW",0.11,ref.47
+CaOH2,€ kg-1,"quicklime production, milled, loose, RoW",0.11,ref.47
+Diesel at consumer - with tax/duties,€ L-1,market for diesel; RoW,1.16,ref.48
+Electricity - for enterprises,€ kWh-1,"market for electricity, high voltage; NL",0.09,ref.49
+FeCl3,€ kg-1,"iron (III) chloride production, product in 40% solution state; RoW",0.13,ref.50
+H2SO4,€ kg-1,market for sulfuric acid; GLO,0.02,ref.51
+HCl,€ kg-1,"Hydrogen chloride (HCl), gas, RER, ELCD, 2000",0.04,ref.52
+Heat - for enterprises,€ kWh-1,"market for natural gas, high pressure; NL (in boiler)",0.07,ref.53
+Heavy fuel oil - with tax/duties,€ MJ-1,"Heavy fuel oil, EU-15, ELCD, 2003",0.51,ref.49
+KCl,€ kg-1,"market for potassium chloride, as K2O; GLO",0.23,ref.54
+Labour - with 'non-wage' costs,€ (manh)-1,-,33.3,ref.49
+Lubricant oil,€ kg-1,market for lubricating oil; RoW,2.05,ref.2
+MgCl2,€ kg-1,Proxy with consumption of 0.24 kWh kg-1,0.68,ref.55
+NaCl,€ kg-1,"market for sodium chloride, powder; GLO",0.008,ref.55
+NaOH,€ kg-1,"market for sodium hydroxide, without water, in 50% solution state",0.34,ref.46
+NaSO4,€ kg-1,"sodium sulfate production, from natural sources; RER",0.13,ref.56
+Natural gas - for enterprises,€ MJ-1,"market for natural gas, high pressure; NL",0.01,ref.49
+NH3 25%,€ kg-1,"market for ammonia, liquid",0.29,ref.54
+"Mineral N-fertilizer (EU average mix), as N",€ kg-1,"Urea (24.5%), AN (27%), CAN (33%), Urea-AN (15.5%) ",0.53,ref.57
+"Mineral P-fertilizer, SSP, as P2O5",€ kg-1,Own calculation based on scenario R (SSP production and transport),0.52,own calculation
+Peat,€ kg-1,market for peat; GLO,0.02,ref.58
+Petroleum coke - with tax/duties,€ kg-1,market for petroleum coke; GLO,0.13,ref.59
+Phosphate rock,€ kg-1,"market for phosphate rock, as P2O5, beneficiated, dry; GLO",0.09,ref.60
+Phosphate rock - transport Morocco to EU,€ kg-1,"market for phosphate fertiliser, as P2O5 - GLO",0.02,ref.60
+Polyelectrolyte (Polyacrylamide),€ kg-1,"iron (III) chloride production, product in 40% solution state; RoW",0.003,ref.61
+"Urea, bulk, as N",€ kg-1,"market for urea, as N; GLO",0.41,ref.54
+Water,€ kg-1,"Drinking water from groundwater, RER, ELCD, 2005",0.0013,ref.62

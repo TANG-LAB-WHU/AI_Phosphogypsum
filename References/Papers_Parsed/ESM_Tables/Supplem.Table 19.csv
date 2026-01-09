@@ -1,0 +1,22 @@
+emissions,fraction applied on land,pathways,unit,Default,min,max,reference/comment
+CH4,concentrated P-fertiliser,"AP1, AP2, AP3, AP4, AP5, RP",% CH4 potential,na,na,na,no carbon in P-fertiliser
+CH4,concentrated P-fertiliser,AP6,% CH4 potential,0,0,0,"no emissions assumed for stable, dry materials"
+CH4,digested sewage sludge,"AP1, CF1, CF3, CF4",% CH4 potential,5,0,17,ref.24
+CH4,liquid pig fraction (non-digested and digested),"AP6, CF6",% CH4 potential,7,0,34,"ref.23, as corrected for cover as per ref.21"
+CH4,dried poultry litter,CF2,% CH4 potential,1,0,2,"ref.23, as corrected for cover as per ref.21"
+CH4,meat and bone meal,CF5,% CH4 potential,0,0,0,"no emissions assumed for stable, dry materials"
+CH4,solid pig manure (digested),CF6,% CH4 potential,0,0,0,emissions from liquid-solid separated material attrributed to liquid fraction 
+N2O,concentrated P-fertiliser,"AP1, AP2, AP3, AP4, AP5, RP",% N,na,na,na,no nitrogen in P-fertiliser
+N2O,concentrated P-fertiliser,AP6,% N,0,0,0,"no emissions assumed for stable, dry materials"
+N2O,digested rest sludge,"AP1, CF1, CF3, CF4",% N,0.2,0,0.5,ref.24
+N2O,liquid pig fraction (non-digested and digested),"AP6, CF6",% N,0.2,0,1,ref.21
+N2O,dried poultry litter,CF2,% N,0.5,0,1.7,ref.21
+N2O,meat and bone meal,CF5,% N,0,0,0,"no emissions assumed for stable, dry materials"
+N2O,solid pig manure (digested),CF6,% N,0,0,0,emissions from liquid-solid separated material attrributed to liquid fraction 
+NH3,concentrated P-fertiliser,"AP1, AP2, AP3, AP4, AP5, RP",% N,na,na,na,na
+NH3,concentrated P-fertiliser,AP6,% N,0,0,0,biochar stability assumption
+NH3,digested rest sludge,"AP1, CF1, CF3, CF4",% N,0.5,0,2,no data as outlined in ref.24; estimate based on manure data
+NH3,liquid pig fraction (non-digested and digested),"AP6, CF6",% N,0.5,0,2,"ref.19, as corrected for cover as per ref.21"
+NH3,dried poultry litter,CF2,% N,3.6,2,8,"refs.21-23, 25"
+NH3,meat and bone meal,CF5,% N,0,0,0,"no emissions assumed for stable, dry materials"
+NH3,solid pig manure (digested),CF6,% N,0,0,0,emissions from liquid-solid separated material attrributed to liquid fraction 

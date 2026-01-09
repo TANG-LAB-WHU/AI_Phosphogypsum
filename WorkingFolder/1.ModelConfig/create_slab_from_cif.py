@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
 """
-Create CaSO4 Slab Model from CIF File
 
 This script reads a CIF file and creates a slab model with specified Miller indices.
 The output is suitable for AIMD (Ab Initio Molecular Dynamics) and MLIP 
 (Machine Learning Interatomic Potentials) calculations.
-
-Dependencies:
-    - ase (Atomic Simulation Environment): pip install ase
-    - pymatgen (optional, for advanced CIF parsing): pip install pymatgen
 
 Usage:
     python create_slab_from_cif.py --cif-input input.cif --miller 0 1 0 --layers 3 --vacuum 15.0
@@ -17,22 +12,40 @@ Usage:
 """
 
 import argparse
+import io
 import sys
+from datetime import datetime
 from pathlib import Path
-from typing import Tuple, Optional
+from typing import Tuple, Optional, TextIO
 
 import numpy as np
+from ase import Atoms
+from ase.io import read, write
+from ase.build import surface, make_supercell
 
-try:
-    from ase import Atoms
-    from ase.io import read, write
-    from ase.build import surface, make_supercell
-except ImportError:
-    print("Error: ASE (Atomic Simulation Environment) is required.")
-    print("Install with: pip install ase")
-    sys.exit(1)
+# Write output to both terminal and log file
+class TeeOutput:
+    """
+    A class that duplicates output to both terminal and a log file.
+    
+    This allows all print statements to be captured in a log file
+    while still displaying them in the terminal.
+    """
+    
+    def __init__(self, log_file: TextIO, terminal: TextIO):
+        self.log_file = log_file
+        self.terminal = terminal
+    
+    def write(self, message: str) -> int:
+        self.terminal.write(message)
+        self.log_file.write(message)
+        return len(message)
+    
+    def flush(self) -> None:
+        self.terminal.flush()
+        self.log_file.flush()
 
-
+# Check if the cell is orthogonal (all angles are 90 degrees)
 def check_orthogonality(atoms: Atoms, tolerance: float = 0.1) -> Tuple[bool, np.ndarray]:
     """
     Check if the cell is orthogonal (all angles are 90 degrees).
@@ -51,7 +64,7 @@ def check_orthogonality(atoms: Atoms, tolerance: float = 0.1) -> Tuple[bool, np.
     
     return is_orthogonal, angles
 
-
+# Attempt to orthogonalize a non-orthogonal cell
 def orthogonalize_cell(atoms: Atoms, verbose: bool = False) -> Atoms:
     """
     Attempt to orthogonalize a non-orthogonal cell.
@@ -142,7 +155,7 @@ def orthogonalize_cell(atoms: Atoms, verbose: bool = False) -> Atoms:
             print("  Could not find orthogonal supercell")
         return atoms_copy
 
-
+# Parse command line arguments
 def parse_arguments() -> argparse.Namespace:
     """
     Parse command line arguments.
@@ -154,19 +167,18 @@ def parse_arguments() -> argparse.Namespace:
         description="Create a slab model from a CIF file with specified Miller indices.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-Examples:
-    # Create a (010) slab with 3 layers and 15 Angstrom vacuum
-    python create_slab_from_cif.py --cif-input gypsum.cif --miller 0 1 0 --layers 3 --vacuum 15.0
-    
-    # Create a (001) slab with 2x2 supercell
-    python create_slab_from_cif.py --cif-input caso4.cif --miller 0 0 1 --layers 4 --supercell 2 2 1
-    
-    # Output in VASP POSCAR format
-    python create_slab_from_cif.py --cif-input input.cif --miller 1 0 0 --format vasp
+            Examples:
+                # Create a (010) slab with 3 layers and 15 Angstrom vacuum
+                python create_slab_from_cif.py --cif-input gypsum.cif --miller 0 1 0 --layers 3 --vacuum 15.0
+                
+                # Create a (001) slab with 2x2 in-plane supercell (layers control c direction)
+                python create_slab_from_cif.py --cif-input caso4.cif --miller 0 0 1 --layers 4 --supercell 2 2
+                
+                # Output in VASP POSCAR format
+                python create_slab_from_cif.py --cif-input input.cif --miller 1 0 0 --format vasp
         """
     )
     
-    # Required arguments
     parser.add_argument(
         "--cif-input", "-c",
         type=str,
@@ -183,7 +195,6 @@ Examples:
         help="Miller indices (h k l) for the surface"
     )
     
-    # Optional arguments
     parser.add_argument(
         "--layers", "-l",
         type=int,
@@ -201,10 +212,10 @@ Examples:
     parser.add_argument(
         "--supercell", "-s",
         type=int,
-        nargs=3,
-        default=[1, 1, 1],
-        metavar=("A", "B", "C"),
-        help="Supercell dimensions (default: 1 1 1)"
+        nargs=2,
+        default=[1, 1],
+        metavar=("A", "B"),
+        help="Supercell dimensions in a and b directions (default: 1 1). Note: c direction is controlled by --layers."
     )
     
     parser.add_argument(
@@ -252,8 +263,15 @@ Examples:
     parser.add_argument(
         "--ortho-tolerance",
         type=float,
-        default=0.01,
+        default=0.001,
         help="Tolerance in degrees for orthogonality check (default: 0.01)"
+    )
+    
+    parser.add_argument(
+        "--z-offset",
+        type=float,
+        default=1.0,
+        help="Set the minimum z-coordinate of the slab in Angstrom (distance from z=0). Default: 1.0"
     )
     
     parser.add_argument(
@@ -270,8 +288,14 @@ Examples:
         help="Skip automatic orthogonalization (use original cell even if non-orthogonal)"
     )
     
+    parser.add_argument(
+        "--log-file",
+        type=str,
+        default="auto",
+        help="Path to save log file. Default: 'auto' (generates log file alongside output). Set to 'none' to disable logging."
+    )
+    
     return parser.parse_args()
-
 
 def load_structure_from_cif(cif_path: str, verbose: bool = False) -> Atoms:
     """
@@ -301,7 +325,6 @@ def load_structure_from_cif(cif_path: str, verbose: bool = False) -> Atoms:
         print(f"  Cell parameters: {atoms.cell.cellpar()}")
     
     return atoms
-
 
 def create_slab(
     bulk: Atoms,
@@ -357,33 +380,35 @@ def create_slab(
     
     return slab
 
-
 def apply_supercell(
     slab: Atoms,
-    supercell_dims: Tuple[int, int, int],
+    supercell_dims: Tuple[int, int],
     verbose: bool = False
 ) -> Atoms:
     """
-    Apply supercell expansion to the slab.
+    Apply supercell expansion to the slab in the a and b directions only.
+    
+    The c direction (perpendicular to the surface) is not expanded here,
+    as it is controlled by the --layers parameter during slab creation.
     
     Args:
         slab: ASE Atoms object
-        supercell_dims: Supercell dimensions (a, b, c)
+        supercell_dims: Supercell dimensions (a, b) - in-plane expansion only
         verbose: Print detailed information
         
     Returns:
         Expanded ASE Atoms object
     """
-    a, b, c = supercell_dims
+    a, b = supercell_dims
     
-    if a == 1 and b == 1 and c == 1:
+    if a == 1 and b == 1:
         return slab
     
     if verbose:
-        print(f"\nApplying supercell: {a}x{b}x{c}")
+        print(f"\nApplying in-plane supercell: {a}x{b}")
     
-    # Create the supercell matrix
-    supercell_matrix = np.diag([a, b, c])
+    # Create the supercell matrix (only expand in a and b, keep c as 1)
+    supercell_matrix = np.diag([a, b, 1])
     
     expanded_slab = make_supercell(slab, supercell_matrix)
     
@@ -393,12 +418,46 @@ def apply_supercell(
     
     return expanded_slab
 
+def apply_z_offset(
+    slab: Atoms,
+    z_offset: float,
+    verbose: bool = False
+) -> Atoms:
+    """
+    Shift the slab along the z-axis so that the minimum z-coordinate equals z_offset.
+    
+    Args:
+        slab: ASE Atoms object
+        z_offset: Target minimum z-coordinate (distance from z=0)
+        verbose: Print detailed information
+        
+    Returns:
+        ASE Atoms object with adjusted z positions
+    """
+    positions = slab.get_positions()
+    current_z_min = positions[:, 2].min()
+    shift = z_offset - current_z_min
+    
+    if verbose:
+        print(f"\nApplying z-offset:")
+        print(f"  Current z_min: {current_z_min:.4f} Angstrom")
+        print(f"  Target z_min: {z_offset:.4f} Angstrom")
+        print(f"  Shift: {shift:.4f} Angstrom")
+    
+    # Apply the shift
+    positions[:, 2] += shift
+    slab.set_positions(positions)
+    
+    if verbose:
+        print(f"  New z range: [{positions[:, 2].min():.4f}, {positions[:, 2].max():.4f}]")
+    
+    return slab
 
 def get_output_filename(
     cif_path: str,
     miller_indices: Tuple[int, int, int],
     layers: int,
-    supercell_dims: Tuple[int, int, int],
+    supercell_dims: Tuple[int, int],
     output_format: str,
     output_dir: Optional[str] = None,
     output_file_name: Optional[str] = None
@@ -410,7 +469,7 @@ def get_output_filename(
         cif_path: Original CIF file path
         miller_indices: Miller indices
         layers: Number of layers
-        supercell_dims: Supercell dimensions
+        supercell_dims: Supercell dimensions (a, b) - in-plane only
         output_format: Output file format
         output_dir: Optional output directory
         output_file_name: Optional explicit output filename
@@ -422,7 +481,7 @@ def get_output_filename(
     base_name = cif_file.stem
     
     h, k, l = miller_indices
-    a, b, c = supercell_dims
+    a, b = supercell_dims
     
     # Format extension mapping
     ext_map = {
@@ -440,7 +499,7 @@ def get_output_filename(
         output_name = output_file_name
     else:
         miller_str = f"{h}{k}{l}"
-        supercell_str = f"_{a}x{b}x{c}" if not (a == 1 and b == 1 and c == 1) else ""
+        supercell_str = f"_{a}x{b}" if not (a == 1 and b == 1) else ""
         output_name = f"{base_name}_slab_{miller_str}_L{layers}{supercell_str}{ext}"
     
     if output_dir:
@@ -453,7 +512,6 @@ def get_output_filename(
         return str(out_path / output_name)
     
     return str(cif_file.parent / output_name)
-
 
 def save_slab(
     slab: Atoms,
@@ -480,9 +538,8 @@ def save_slab(
     print(f"\nOutput saved: {output_path}")
     print(f"  Total atoms: {len(slab)}")
     print(f"  Chemical formula: {slab.get_chemical_formula()}")
-    print(f"  Cell dimensions: {slab.cell.cellpar()[:3].round(4)}")
-    print(f"  Cell angles: {slab.cell.cellpar()[3:].round(2)}")
-
+    cell_params = slab.cell.cellpar()
+    print(f"  Lattice parameters: {cell_params[0]:.4f} {cell_params[1]:.4f} {cell_params[2]:.4f} {cell_params[3]:.2f} {cell_params[4]:.2f} {cell_params[5]:.2f}")
 
 def print_slab_info(slab: Atoms) -> None:
     """
@@ -529,16 +586,69 @@ def print_slab_info(slab: Atoms) -> None:
     
     print("=" * 60)
 
-
 def main():
     """Main function to create slab model from CIF file."""
     args = parse_arguments()
     
-    print("\n" + "=" * 60)
-    print("CaSO4 SLAB MODEL GENERATOR")
-    print("=" * 60)
+    # Setup logging if requested
+    log_file_handle = None
+    original_stdout = sys.stdout
     
     try:
+        # Determine output path first (needed for auto log file naming)
+        output_path = get_output_filename(
+            cif_path=args.cif_input,
+            miller_indices=tuple(args.miller),
+            layers=args.layers,
+            supercell_dims=tuple(args.supercell),
+            output_format=args.format,
+            output_dir=args.output_dir,
+            output_file_name=args.output_file
+        )
+        
+        # Setup log file if requested (skip if set to 'none')
+        if args.log_file and args.log_file.lower() != "none":
+            if args.log_file.lower() == "auto":
+                # Generate log file path alongside output file
+                output_path_obj = Path(output_path)
+                log_path = output_path_obj.with_suffix(".log")
+            else:
+                log_path = Path(args.log_file)
+            
+            # Ensure parent directory exists
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+            log_file_handle = open(log_path, "w", encoding="utf-8")
+            sys.stdout = TeeOutput(log_file_handle, original_stdout)
+            
+            # Write log header with all parameters
+            print(f"# Log generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            print(f"# Command: python create_slab_from_cif.py \\")
+            print(f"#   --cif-input {args.cif_input} \\")
+            print(f"#   --miller {' '.join(map(str, args.miller))} \\")
+            print(f"#   --layers {args.layers} \\")
+            print(f"#   --vacuum {args.vacuum} \\")
+            print(f"#   --supercell {' '.join(map(str, args.supercell))} \\")
+            print(f"#   --z-offset {args.z_offset} \\")
+            print(f"#   --format {args.format} \\")
+            print(f"#   --ortho-tolerance {args.ortho_tolerance}", end="")
+            if args.require_ortho:
+                print(" \\")
+                print("#   --require-ortho", end="")
+            if args.skip_ortho:
+                print(" \\")
+                print("#   --skip-ortho", end="")
+            if args.periodic:
+                print(" \\")
+                print("#   --periodic", end="")
+            if args.verbose:
+                print(" \\")
+                print("#   --verbose", end="")
+            print("")  # End of command line
+        
+        print("\n" + "=" * 60)
+        print("CaSO4 SLAB MODEL GENERATOR")
+        print("=" * 60)
+        
         # Load the bulk crystal structure
         bulk = load_structure_from_cif(args.cif_input, verbose=args.verbose)
         
@@ -610,19 +720,27 @@ def main():
         
         print("-" * 60)
         
+        # Apply z-offset if specified
+        if args.z_offset is not None:
+            print("\n" + "-" * 60)
+            print("Z-OFFSET ADJUSTMENT")
+            print("-" * 60)
+            positions = slab.get_positions()
+            current_z_min = positions[:, 2].min()
+            current_z_max = positions[:, 2].max()
+            print(f"Before: z range = [{current_z_min:.4f}, {current_z_max:.4f}] Angstrom")
+            
+            slab = apply_z_offset(slab, args.z_offset, verbose=args.verbose)
+            
+            positions = slab.get_positions()
+            new_z_min = positions[:, 2].min()
+            new_z_max = positions[:, 2].max()
+            print(f"After:  z range = [{new_z_min:.4f}, {new_z_max:.4f}] Angstrom")
+            print(f"Shift applied: {args.z_offset - current_z_min:.4f} Angstrom")
+            print("-" * 60)
+        
         # Print slab information
         print_slab_info(slab)
-        
-        # Determine output path
-        output_path = get_output_filename(
-            cif_path=args.cif_input,
-            miller_indices=tuple(args.miller),
-            layers=args.layers,
-            supercell_dims=tuple(args.supercell),
-            output_format=args.format,
-            output_dir=args.output_dir,
-            output_file_name=args.output_file
-        )
         
         # Save the slab
         save_slab(
@@ -635,6 +753,9 @@ def main():
         print("\nSlab model creation completed successfully!")
         print("The output file can be used for AIMD and MLIP calculations.")
         
+        if log_file_handle:
+            print(f"\nLog saved to: {log_path}")
+        
     except FileNotFoundError as e:
         print(f"Error: {e}")
         sys.exit(1)
@@ -644,7 +765,13 @@ def main():
             import traceback
             traceback.print_exc()
         sys.exit(1)
+    finally:
+        # Restore stdout and close log file
+        sys.stdout = original_stdout
+        if log_file_handle:
+            log_file_handle.close()
 
 
 if __name__ == "__main__":
     main()
+

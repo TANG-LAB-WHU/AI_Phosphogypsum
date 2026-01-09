@@ -1,1 +1,38 @@
-python create_slab_from_cif.py --cif-input 1.1CSO-2H2O/conventional_cell.cif --miller 0 1 0 --layers 3 --vacuum 15.0
+# calsium sulfate dihydrate
+python create_slab_from_cif.py --cif-input 1.1CSO-2H2O/conventional_cell.cif --miller 0 2 0 --layers 2 --vacuum 15.0 --supercell 2 2
+
+# calcium sulfate anhydrate
+python create_slab_from_cif.py --cif-input 1.2CSO/conventional_cell.cif --miller 0 2 0 --layers 3 --vacuum 15.0 --supercell 2 2 --require-ortho
+
+
+python NH4_packing_CSOslab.py `
+    --slab-input 1.1CSO-2H2O/conventional_cell_slab_020_L2_2x2.xyz `
+    --output-dir 1.3CSO-2H2O+NH4 `
+    --n-water 20 `
+    --n-nh3 3 `
+    --n-nh4 3 `
+    --n-hpo4 2 `
+    --auto-vacuum `
+    --min-distance 2.5 `
+    --z-reoffset 2 `
+    --wrap `
+    --no-boundary-cross `
+    --pbc-xyz `
+    --target-vacuum 18 `
+    --verbose
+
+python NH4_packing_CSOslab.py `
+    --slab-input 1.2CSO/conventional_cell_slab_020_L3_2x2.xyz `
+    --output-dir 1.4CSO+NH4 `
+    --n-water 20 `
+    --n-nh3 3 `
+    --n-nh4 3 `
+    --n-hpo4 2 `
+    --auto-vacuum `
+    --min-distance 2.5 `
+    --z-reoffset 2 `
+    --wrap `
+    --no-boundary-cross `
+    --pbc-xyz `
+    --target-vacuum 18 `
+    --verbose

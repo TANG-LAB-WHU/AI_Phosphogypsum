@@ -1,0 +1,98 @@
+# Log generated: 2026-01-10 01:40:08
+# Command: python NH4_packing_CSOslab.py \
+#   --slab-input 1.2CSO/conventional_cell_slab_020_L3_2x2.xyz \
+#   --output-dir 1.4CSO+NH4 \
+#   --n-water 20 \
+#   --n-nh3 3 \
+#   --n-nh4 3 \
+#   --n-hpo4 2 \
+#   --packing-vacuum 15.0 \
+#   --min-distance 2.5 \
+#   --z-buffer 2.0 \
+#   --auto-vacuum ON \
+#   --target-vacuum 18.0 \
+#   --z-reoffset 2.0 \
+#   --wrap \
+#   --pbc-xyz \
+#   --no-boundary-cross
+
+============================================================
+MOLECULE PACKING FOR CaSO4 SLAB
+============================================================
+
+Loading slab: 1.2CSO/conventional_cell_slab_020_L3_2x2.xyz
+  Slab atoms: 288
+  Formula: Ca48O192S48
+  Cell: 12.77 x 14.11 x 34.98 Angstrom
+  Slab z-range: [1.00, 20.98] Angstrom
+
+------------------------------------------------------------
+PACKING MOLECULES
+------------------------------------------------------------
+
+Auto-vacuum estimation:
+  Estimated molecular volume: 986.2 Angstrom^3
+  Max molecule height: 2.36 Angstrom
+  Calculated packing height: 18.04 Angstrom
+
+Packing region: z = [22.98, 41.01] Angstrom
+Cell dimensions: a=12.77, b=14.11, c=43.01
+Packing region height: 18.04 Angstrom
+
+Packing 20 x H2O...
+  Placed: 20/20
+
+Packing 3 x H3N...
+  Placed: 3/3
+
+Packing 3 x H4N...
+  Placed: 3/3
+
+Packing 2 x HO4P...
+  Placed: 2/2
+
+------------------------------------------------------------
+PACKING RESULTS
+------------------------------------------------------------
+Molecules placed: 28
+Placement failures: 0
+  H2O: 20 placed, 0 failed
+  H3N: 3 placed, 0 failed
+  H4N: 3 placed, 0 failed
+  HO4P: 2 placed, 0 failed
+
+------------------------------------------------------------
+WRAP OPERATION
+------------------------------------------------------------
+Wrapped atoms in x and y directions (slab model detected)
+
+------------------------------------------------------------
+Z-REOFFSET ADJUSTMENT
+------------------------------------------------------------
+Current z_min: 1.0000 Angstrom (in pure CSO slab model)
+Target z_min: 2.0000 Angstrom
+Shift applied: 1.0000 Angstrom
+New cell c: 44.0124 Angstrom
+
+------------------------------------------------------------
+TARGET VACUUM ADJUSTMENT
+------------------------------------------------------------
+Current vacuum above molecules: 1.98 Angstrom
+Target vacuum: 18.00 Angstrom
+New cell c: 60.0277 Angstrom
+
+Final structure:
+  Total atoms: 387
+  Formula: H63Ca48N6O220P2S48
+  Z-range: [2.0000, 42.0277] Angstrom
+  Final vacuum thickness: 18.00 Angstrom
+  PBC: [True, True, True] (for DeepMD-kit)
+
+Saving to: 1.4CSO+NH4\conventional_cell_slab_020_L3_2x2_packed_w20_nh3_3_nh4_3_hpo4_2.xyz
+  Lattice parameters: 12.7684 14.1137 60.0277 90.00 90.00 90.00
+
+============================================================
+Packing completed successfully!
+============================================================
+
+Log saved to: 1.4CSO+NH4\conventional_cell_slab_020_L3_2x2_packed_w20_nh3_3_nh4_3_hpo4_2.log

@@ -1,0 +1,45 @@
+Unnamed: 0,Unit,AD SEW (thick),AD PIM (dw)
+Capacity,,,
+Annual usage rate ,t a-1,72000,72000
+Life time ,a,20,20
+,,,
+Inputs,,,
+Feedstock-type,,SEW (thick),PIM (dw)
+Feedstock-quantity,t ,1,1
+Diesel,L t-1,0.29,0.29
+Electricity,kWh t-1,6.18,6.18
+Heat,kWh t-1,0δ,0δ
+Labour,manh  t-1,0.007,0.007
+,,,
+Outputs,,,
+Digestate,kg TS t-1,24,135
+Biogas-Electricity,kWh t-1,2.1α,59γ
+,,,
+Air emissions (fugitive),,,
+CH4 ,kg t-1,0.2,1.1
+CO2 biogenic,kg t-1,0.55,3
+,,,
+Air emissions ,,,
+(gas-engine)ε,,,
+CH4,g MJ-1,0.434,0.434
+N2O,g MJ-1,0.202,0.202
+NOx,g MJ-1,0.0016,0.0016
+SOx,g MJ-1,0.434,0.434
+CO2 biogenic,kg t-1,44,239
+,,,
+Fixed costs,,,
+CAPEXζ,€,2050000,2050000
+Insurance,%CAPEX,1.5,1.5
+Maintenance,%CAPEX,3,3
+,,,
+Fixed costs (per t),,,
+CAPEXη,€ t-1,2.3,2.3
+Insurance,€ t-1,0.4,0.4
+Maintenance,€ t-1,0.9,0.9
+α Corresponding to a methane production of 4.13 Nm3 CH4 (157 MJ). ,,,
+β Corresponding to a methane production of 0.84 Nm3 CH4 (32 MJ). ,,,
+γ Corresponding to a methane production of 3.23 Nm3 CH4 (123 MJ). ,,,
+δ It is assumed that the waste-heat from the gas engine is reused internally to heat the reactor (no external heat source required). ,,,
+"ε Emissions are expressed per MJ of biogas-energy in input to the engine, based on ref. 13. ",,,
+ζ Based on the figures reported in ref. 14. ,,,
+η Annualised (Eq. 1 in Supplementary Methods) and divided by the annual usage rate (Eq. 2 in Supplementary Methods).,,,

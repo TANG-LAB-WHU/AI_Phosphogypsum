@@ -1,0 +1,9 @@
+Scenario,Functional unit,Unnamed: 2,Type of input material applied,Total weight of input material applied (kg),Type of concentrated P-fertiliser,P concentration of concentrated P-fertiliser (% dry matter),Bio-available P fraction of concentrated P-fertiliser (% of total P),P-recovery in concentrated P-fertiliser (% of P in input material)*
+AP1,1 kg bio-available P in a concentrated P-fertiliser,,undigested sewage sludge (5% DM),1772.0,struvite,12.6,100.0,46.0
+AP2,,,raw poultry litter (48% DM),139.0,poultry litter ash,6.5,93.0,100.0
+AP3,,,undigested sewage sludge (5% DM),925.0,AshDec® rhenanite-like substance,7.4,90.0,98.0
+AP4,,,undigested sewage sludge (5% DM),824.0,phosphoric acid,31.6,100.0,100.0
+AP5,,,meat-and-bone meal (97% DM),31.0,single superphosphate-like material,8.7,100.0,100.0
+AP6,,,"raw pig manure (slurry, 5% DM)",3565.0,pyrolysis material,4.2,85.0,62.0
+RP,,,rock phosphate (100% DM),7.41,single superphosphate,7.9,100.0,100.0
+*physical P-losses and spills are assumed to be zero across all pathways,,,,,,,,

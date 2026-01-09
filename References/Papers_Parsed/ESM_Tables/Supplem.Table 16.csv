@@ -1,0 +1,26 @@
+Unnamed: 0,Unit,Wasstrip®- Ostara Pearl®
+Capacity,,
+Usage rate,t a-1,200000
+Life time ,a,20
+,,
+Inputs,,
+Feedstock-type,,SEW (dg dw)
+Feedstock-quantity,t,1
+Electricity aeration,kWh t-1,0.026
+Polyelectrolyte,kg t-1,0.35
+Labour,manh t-1,0.042
+,,
+Outputs,,
+P-precipitate,kg P t-1,0.56
+P-wastewater,kg P t-1,0.072
+,,
+Fixed costs,,
+CAPEX,€,1000000
+Insurance,%CAPEX,1.5
+Maintenance,%CAPEX,3
+,,
+Fixed costs (per t),,
+CAPEX,€ t-1,0.4
+Insurance,€ t-1,0.08
+Maintenance,€ t-1,0.15
+α Annualised (Eq. 1 in Supplementary Methods) and divided by the annual usage rate (Eq. 2 in Supplementary Methods),,

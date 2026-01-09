@@ -1,0 +1,31 @@
+Process,Sub-process,Parameter name,Description,Unit,Distribution
+Feedstock Composition,Feedstock Composition,N_BM,"N content, dry basis",%TS,ND
+Feedstock Composition,Feedstock Composition,P_BM,"P content, dry basis",%TS,ND
+Feedstock Composition,Feedstock Composition,K_BM,"K content, dry basis",%TS,ND
+Feedstock Composition,Feedstock Composition,Cbioand_BM,"C content, dry basis",%TS,ND
+Feedstock Composition,Feedstock Composition,Energy_BM,"Energy content, dry basis",MJ kg-1 TS,ND
+Feedstock Composition,Feedstock Composition,Hg_BM,"Hg content, dry basis",%TS,ND
+Feedstock Composition,Feedstock Composition,Cd_BM,"Cd content, dry basis",%TS,ND
+Feedstock Composition,Feedstock Composition,Cr_BM,"Cr content, dry basis",%TS,ND
+Feedstock Composition,Feedstock Composition,Cu_BM,"Cu content, dry basis",%TS,ND
+Feedstock Composition,Feedstock Composition,Ni_BM,"Ni content, dry basis",%TS,ND
+Feedstock Composition,Feedstock Composition,Pb_BM,"Pb content, dry basis",%TS,ND
+Feedstock Composition,Feedstock Composition,Zn_BM,"Zn content, dry basis",%TS,ND
+Feedstock Composition,Feedstock Composition,CH4_pot_RAW,Methane potential of the raw biomass,Nm3 CH4 t-1 ww,TD
+Technology,Mono-Incineration (or Mono-Pyrolysis),el_inc,Electricity recovery efficiency for mono- incineration,% LHV ww,TD
+Technology,Anaerobic Digestion,BG_yield,"CH4 yield, as percent of CH4 potential",% CH4 potential,TD
+Technology,Technology - Substance split #1,P_TC,% substance routed to solid fraction,% to solid fraction ,TD
+Technology,Technology - Substance split #1,C_TC,% substance routed to solid fraction,% to solid fraction ,TD
+Technology,Technology - Substance split #2,Cu_TC2,% substance routed to solid fraction,% to solid fraction ,TD
+Technology,Technology - Substance split #2,Zn_TC2,% substance routed to solid fraction,% to solid fraction ,TD
+Use-on-Land,UOL Digestate (Advanced scenario - A),N_leaching_AD_GW,N emission to water (GroundWater),% N applied digestate,TD
+Use-on-Land,UOL Digestate (Advanced scenario - A),NH3_dig,NH3-N emission,% N applied digestate,TD
+Use-on-Land,UOL RAW  biomass,N2O_RAW,N2O-N emission,% N applied RAW,TD
+Use-on-Land,UOL RAW  biomass,P_leached_RAW,"P lost to water (run-off, erosion, drainage, from stables)-Surface Water",% P applied RAW,TD
+NPK & other substitution,UOL concentrated P-fertiliser (Advanced scenario - A),N_fert_subst,N substitution efficiency,kg N kg-1 N applied P-fertilizer,TD
+NPK & other substitution,UOL concentrated P-fertiliser (Advanced scenario - A),P_fert_subst,P substitution efficiency,kg P kg-1 P applied P-fertilizer,TD
+NPK & other substitution,UOL concentrated P-fertiliser (Advanced scenario - A),K_fert_subst_RAW,K substitution efficiency,kg K kg-1 K applied P-fertilizer,TD
+Storage,Storage RAW biomass,CH4_storage_RAW,CH4 emission,% CH4 potential RAW,TD
+Storage,Storage RAW biomass,N2O_storage_RAW,N2O-N emission,% N input RAW,TD
+Transport,Transport,Tr_RAW,km transport of RAW feedstock in the current-day feedstock - C,km*kg ww,TD
+Transport,Transport,Tr_OW,km transport of RAW feedstock in the Advanced scenario - A,km*kg ww,TD
