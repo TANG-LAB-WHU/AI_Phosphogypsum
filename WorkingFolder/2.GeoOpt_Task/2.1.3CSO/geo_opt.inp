@@ -1,0 +1,150 @@
+@SET PROJECT_NAME gypsum_slab_geoopt
+@SET EPS_SCF 1.0E-6
+@SET CUT_OFF 420
+@SET MAX_SCF 120
+
+&GLOBAL
+  PROJECT_NAME  ${PROJECT_NAME}
+  RUN_TYPE      GEO_OPT
+  PRINT_LEVEL   LOW
+&END GLOBAL
+
+&FORCE_EVAL
+  METHOD           QUICKSTEP
+  &DFT
+    BASIS_SET_FILE_NAME  BASIS_MOLOPT_UZH
+    POTENTIAL_FILE_NAME  POTENTIAL_UZH
+    CHARGE        0
+    MULTIPLICITY  1
+    UKS
+    &MGRID
+      CUTOFF       ${CUT_OFF}
+      REL_CUTOFF   60
+      NGRIDS       5
+    &END MGRID
+    &QS
+      METHOD       GPW     
+      EPS_DEFAULT  1.0E-12
+      EPS_PGF_ORB  1.0E-14
+      EXTRAPOLATION ASPC
+      EXTRAPOLATION_ORDER 5
+    &END QS
+    &POISSON
+      PERIODIC XY
+      PSOLVER  MT
+    &END POISSON
+    &SCF
+      MAX_SCF      ${MAX_SCF}
+      EPS_SCF      ${EPS_SCF}
+      SCF_GUESS    ATOMIC
+      &OT
+        MINIMIZER       DIIS
+        PRECONDITIONER  FULL_SINGLE_INVERSE
+        ENERGY_GAP      0.1
+        STEPSIZE        0.1
+        PRECOND_SOLVER INVERSE_UPDATE
+      &END OT
+      &OUTER_SCF
+        MAX_SCF     20
+        EPS_SCF     ${EPS_SCF}
+      &END OUTER_SCF
+      &PRINT
+        &RESTART
+          BACKUP_COPIES 1
+          &EACH
+            GEO_OPT 1
+          &END EACH
+        &END RESTART
+      &END PRINT
+    &END SCF
+    &XC
+      &XC_FUNCTIONAL
+        &PBE
+          PARAMETRIZATION REVPBE
+          SCALE_X 1.0
+          SCALE_C 1.0
+        &END PBE
+      &END XC_FUNCTIONAL
+      ! D4 dispersion correction (superior for H-bonded systems)
+      &VDW_POTENTIAL
+        POTENTIAL_TYPE  PAIR_POTENTIAL
+        &PAIR_POTENTIAL
+          TYPE           DFTD4
+          REFERENCE_FUNCTIONAL revPBE
+          R_CUTOFF       15.0
+          D4_CUTOFF      30.0
+        &END PAIR_POTENTIAL
+      &END VDW_POTENTIAL
+      &XC_GRID
+        XC_DERIV    SPLINE3_SMOOTH
+        XC_SMOOTH_RHO  SPLINE3
+      &END XC_GRID
+    &END XC
+    &PRINT
+      &E_DENSITY_CUBE OFF
+      &END E_DENSITY_CUBE
+    &END PRINT
+  &END DFT
+  
+  &SUBSYS
+    &CELL
+      ! Cell vectors from XYZ file (in Angstrom)
+      A   12.76842 0.0 0.0 
+      B   0.0 14.11374 0.0
+      C   0.0 0.0 20.9084508
+      PERIODIC  XY         ! Slab model: periodic in X and Y only
+    &END CELL
+    &TOPOLOGY
+      COORD_FILE_NAME   conventional_cell_slab_020_L1_2x2.xyz
+      COORD_FILE_FORMAT XYZ
+    &END TOPOLOGY
+    ! Basis sets and pseudopotentials for each element
+    &KIND Ca
+      BASIS_SET ORB DZVP-MOLOPT-PBE-GTH-q10
+      POTENTIAL GTH-PBE-q10
+    &END KIND
+    &KIND O
+      BASIS_SET ORB DZVP-MOLOPT-PBE-GTH-q6
+      POTENTIAL GTH-PBE-q6
+    &END KIND
+    &KIND S
+      BASIS_SET ORB DZVP-MOLOPT-PBE-GTH-q6
+      POTENTIAL GTH-PBE-q6
+    &END KIND
+    &KIND H
+      BASIS_SET ORB TZV2P-MOLOPT-PBE-GTH-q1
+      POTENTIAL GTH-PBE-q1
+    &END KIND
+  &END SUBSYS
+&END FORCE_EVAL
+
+&MOTION
+  &GEO_OPT
+    TYPE          MINIMIZATION
+    OPTIMIZER     BFGS
+    MAX_ITER      200
+    MAX_DR        3.0E-3    ! Max displacement (Bohr)
+    MAX_FORCE     4.5E-4    ! Max force (Hartree/Bohr)
+    RMS_DR        1.5E-3    ! RMS displacement
+    RMS_FORCE     3.0E-4    ! RMS force
+    &BFGS
+      TRUST_RADIUS  0.25
+    &END BFGS
+  &END GEO_OPT
+  &PRINT
+    &TRAJECTORY
+      FORMAT XYZ
+      &EACH
+        GEO_OPT 1
+      &END EACH
+    &END TRAJECTORY
+    &RESTART
+      BACKUP_COPIES 1
+      &EACH
+        GEO_OPT 5
+      &END EACH
+    &END RESTART
+    &RESTART_HISTORY OFF
+    &END RESTART_HISTORY
+  &END PRINT
+&END MOTION

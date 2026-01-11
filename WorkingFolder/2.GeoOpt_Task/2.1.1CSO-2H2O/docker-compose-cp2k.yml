@@ -1,0 +1,19 @@
+x-gpu: &gpu
+  deploy:
+    resources:
+      reservations:
+        devices:
+          - capabilities: [gpu]
+
+services:
+  cp2k_geoopt:
+    image: mycp2k-rtx5080:master_mpich_native_cuda_A100_psmp
+    #image: mycp2k-rtx5090:master_mpich_native_cuda_A100_psmp
+    working_dir: /mnt/cp2k
+    volumes:
+      - .:/mnt/cp2k       # Mount current directory for input/output
+    environment:
+      - OMP_NUM_THREADS=16
+    command: mpirun -np 1 cp2k.psmp -i geo_opt.inp -o geo_opt.log
+    restart: "no"
+    <<: *gpu

@@ -138,6 +138,37 @@ def create_hydrogen_phosphate() -> Atoms:
     return Atoms('PO4H', positions=positions)
 
 
+def calculate_model_charge(n_nh4: int, n_hpo4: int) -> dict:
+    """
+    Calculate the formal charge of the model based on ionic species.
+    
+    Formal charges:
+    - NH4+ (ammonium): +1 per ion
+    - HPO4^2- (hydrogen phosphate): -2 per ion
+    - H2O, NH3: neutral
+    - CaSO4 slab: assumed neutral (Ca2+ and SO4^2- balanced)
+    
+    Args:
+        n_nh4: Number of NH4+ ions
+        n_hpo4: Number of HPO4^2- ions
+        
+    Returns:
+        Dictionary containing charge breakdown and total charge
+    """
+    charge_nh4 = n_nh4 * 1       # +1 per NH4+
+    charge_hpo4 = n_hpo4 * (-2)  # -2 per HPO4^2-
+    total_charge = charge_nh4 + charge_hpo4
+    
+    return {
+        'n_nh4': n_nh4,
+        'charge_nh4': charge_nh4,
+        'n_hpo4': n_hpo4,
+        'charge_hpo4': charge_hpo4,
+        'total_charge': total_charge,
+        'is_neutral': total_charge == 0
+    }
+
+
 # =============================================================================
 # Packing Functions
 # =============================================================================
@@ -786,6 +817,45 @@ def main():
         print(f"Placement failures: {stats['total_failed']}")
         for mol_name, mol_stats in stats['by_molecule'].items():
             print(f"  {mol_name}: {mol_stats['placed']} placed, {mol_stats['failed']} failed")
+        
+        # Model charge check
+        print("\n" + "-" * 60)
+        print("MODEL CHARGE CHECK")
+        print("-" * 60)
+        
+        # Get actual placed counts for charged species (use requested if no failures)
+        placed_nh4 = stats['by_molecule'].get('H4N', {}).get('placed', 0)
+        placed_hpo4 = stats['by_molecule'].get('HO4P', {}).get('placed', 0)
+        
+        # If no molecules tracked yet, use args directly
+        if placed_nh4 == 0 and args.n_nh4 > 0:
+            placed_nh4 = args.n_nh4 - stats['by_molecule'].get('H4N', {}).get('failed', 0)
+        if placed_hpo4 == 0 and args.n_hpo4 > 0:
+            placed_hpo4 = args.n_hpo4 - stats['by_molecule'].get('HO4P', {}).get('failed', 0)
+        
+        charge_info = calculate_model_charge(placed_nh4, placed_hpo4)
+        
+        print(f"Charged species:")
+        print(f"  NH4+ ions: {charge_info['n_nh4']} × (+1) = +{charge_info['charge_nh4']}")
+        print(f"  HPO4^2- ions: {charge_info['n_hpo4']} × (-2) = {charge_info['charge_hpo4']}")
+        print(f"  H2O molecules: {stats['by_molecule'].get('H2O', {}).get('placed', args.n_water)} × (0) = 0")
+        print(f"  NH3 molecules: {stats['by_molecule'].get('H3N', {}).get('placed', args.n_nh3)} × (0) = 0")
+        print(f"  CaSO4 slab: neutral (Ca2+ balanced by SO4^2-)")
+        print("-" * 40)
+        print(f"Total formal charge: {charge_info['total_charge']:+d}")
+        
+        if charge_info['is_neutral']:
+            print("✓ Model is charge-neutral")
+        else:
+            print(f"⚠ WARNING: Model is NOT charge-neutral!")
+            print(f"  Suggestion: For neutral system, balance NH4+ and HPO4^2- ions")
+            print(f"  Example: 2 NH4+ per 1 HPO4^2- (i.e., (NH4)2HPO4)")
+            if charge_info['total_charge'] > 0:
+                needed_hpo4 = (charge_info['total_charge'] + 1) // 2
+                print(f"  To neutralize current +{charge_info['total_charge']} charge: add {needed_hpo4} more HPO4^2-")
+            else:
+                needed_nh4 = -charge_info['total_charge']
+                print(f"  To neutralize current {charge_info['total_charge']} charge: add {needed_nh4} more NH4+")
         
         # Apply wrap if requested (for AIMD compatibility)
         if args.wrap:

@@ -1,0 +1,81 @@
+# Log generated: 2026-01-10 19:15:56
+# Command: python create_slab_from_cif.py \
+#   --cif-input c:/Users/SIQI/Documents/Github/AI_Phosphogypsum/References/Structural_Data/PG_ICSD/33.cif \
+#   --miller 0 2 0 \
+#   --layers 2 \
+#   --vacuum 10.0 \
+#   --supercell 1 1 \
+#   --z-offset 1.0 \
+#   --format extxyz \
+#   --ortho-tolerance 0.001
+
+============================================================
+CaSO4 SLAB MODEL GENERATOR
+============================================================
+  Warning: CIF parsing error detected: Unexpected CIF file entry: "'"
+  Attempting automatic CIF cleaning...
+  Retrying with cleaned CIF: c:\Users\SIQI\Documents\Github\AI_Phosphogypsum\References\Structural_Data\PG_ICSD\33_ase.cif
+  Success! CIF loaded after cleaning.
+
+------------------------------------------------------------
+ORTHOGONALITY CHECK
+------------------------------------------------------------
+Cell angles: alpha=90.0000, beta=90.0000, gamma=118.4300
+Tolerance: 0.001 degrees
+Status: NON-ORTHOGONAL
+  Deviation from 90: alpha=0.0000, beta=0.0000, gamma=28.4300
+
+Performing automatic orthogonalization...
+
+After orthogonalization:
+  Cell angles: alpha=90.0000, beta=90.0000, gamma=114.1698
+  Atom count: 96 -> 96
+  Result: IMPROVED (total deviation reduced by 15.0%)
+  Note: Cell is more orthogonal but not fully. Output will proceed.
+------------------------------------------------------------
+
+------------------------------------------------------------
+Z-OFFSET ADJUSTMENT
+------------------------------------------------------------
+Before: z range = [5.0000, 34.7290] Angstrom
+After:  z range = [1.0000, 30.7290] Angstrom
+Shift applied: -4.0000 Angstrom
+------------------------------------------------------------
+
+============================================================
+SLAB MODEL INFORMATION
+============================================================
+
+Atom Counts:
+  Ca :     8
+  H  :    32
+  O  :    48
+  S  :     8
+
+  Total:    96 atoms
+
+Cell Parameters:
+  a = 5.6790 Angstrom
+  b = 6.2865 Angstrom
+  c = 39.7290 Angstrom
+  alpha = 90.00 degrees
+  beta  = 90.00 degrees
+  gamma = 114.17 degrees
+
+Cell Volume: 1294.04 Angstrom^3
+
+Position Ranges:
+  x: [-2.0562, 5.1612]
+  y: [0.0212, 5.7142]
+  z: [1.0000, 30.7290]
+============================================================
+
+Output saved: c:\Users\SIQI\Documents\Github\AI_Phosphogypsum\References\Structural_Data\PG_ICSD\33_slab_020_L2.xyz
+  Total atoms: 96
+  Chemical formula: H32Ca8O48S8
+  Lattice parameters: 5.6790 6.2865 39.7290 90.00 90.00 114.17
+
+Slab model creation completed successfully!
+The output file can be used for AIMD and MLIP calculations.
+
+Log saved to: c:\Users\SIQI\Documents\Github\AI_Phosphogypsum\References\Structural_Data\PG_ICSD\33_slab_020_L2.log

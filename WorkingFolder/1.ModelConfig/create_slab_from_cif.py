@@ -297,6 +297,87 @@ def parse_arguments() -> argparse.Namespace:
     
     return parser.parse_args()
 
+def clean_cif_for_ase(cif_path: str, output_path: str = None, verbose: bool = False) -> str:
+    """
+    Clean a CIF file to make it compatible with ASE parser.
+    
+    Removes problematic multi-line comments (_cgraph_comments, _cgraph_title)
+    that cause parsing errors in ASE.
+    
+    Args:
+        cif_path: Path to the original CIF file
+        output_path: Path to save the cleaned CIF file (default: adds '_ase' suffix)
+        verbose: Print detailed information
+        
+    Returns:
+        Path to the cleaned CIF file
+    """
+    import re
+    
+    cif_file = Path(cif_path)
+    if output_path is None:
+        output_path = cif_file.parent / f"{cif_file.stem}_ase.cif"
+    else:
+        output_path = Path(output_path)
+    
+    with open(cif_file, 'r', encoding='utf-8', errors='ignore') as f:
+        content = f.read()
+    
+    # Remove problematic multi-line entries
+    # Pattern matches: _cgraph_comments 'any text including newlines until closing quote'
+    # or _cgraph_title 'any text'
+    patterns_to_remove = [
+        r"_cgraph_comments\s+'[^']*'\s*\n?",  # Multi-line comments
+        r"_cgraph_comments\s+\"[^\"]*\"\s*\n?",
+        r"_cgraph_title\s+'[^']*'\s*\n?",
+        r"_cgraph_title\s+\"[^\"]*\"\s*\n?",
+        r"_eof\s*\n?",  # End of file marker
+        r"#### End of Crystallographic Information File ####\s*\n?",
+    ]
+    
+    cleaned_content = content
+    for pattern in patterns_to_remove:
+        cleaned_content = re.sub(pattern, '', cleaned_content, flags=re.DOTALL | re.MULTILINE)
+    
+    # Also handle malformed multi-line strings (lines starting with continuation of previous string)
+    # This catches cases where the comment spans multiple lines with embedded newlines
+    lines = cleaned_content.split('\n')
+    cleaned_lines = []
+    in_multiline_comment = False
+    
+    for line in lines:
+        # Check if we're starting a problematic entry
+        if '_cgraph_comments' in line or '_cgraph_title' in line:
+            # Check if it's a single-line entry (starts and ends with quotes)
+            quote_count = line.count("'") + line.count('"')
+            if quote_count % 2 == 0:
+                # Complete entry, skip it
+                continue
+            else:
+                # Start of multi-line, skip and set flag
+                in_multiline_comment = True
+                continue
+        
+        # If in multi-line comment, look for closing quote
+        if in_multiline_comment:
+            if "'" in line or '"' in line:
+                in_multiline_comment = False
+            continue
+        
+        cleaned_lines.append(line)
+    
+    cleaned_content = '\n'.join(cleaned_lines)
+    
+    # Write cleaned file
+    with open(output_path, 'w', encoding='utf-8') as f:
+        f.write(cleaned_content)
+    
+    if verbose:
+        print(f"  Cleaned CIF saved to: {output_path}")
+    
+    return str(output_path)
+
+
 def load_structure_from_cif(cif_path: str, verbose: bool = False) -> Atoms:
     """
     Load crystal structure from a CIF file.
@@ -316,8 +397,25 @@ def load_structure_from_cif(cif_path: str, verbose: bool = False) -> Atoms:
     if verbose:
         print(f"Loading CIF file: {cif_file}")
     
-    # Read the CIF file using ASE
-    atoms = read(str(cif_file), format="cif")
+    # Try to read the CIF file using ASE
+    try:
+        atoms = read(str(cif_file), format="cif")
+    except ValueError as e:
+        error_msg = str(e)
+        if "Unexpected CIF file entry" in error_msg:
+            # CIF has problematic multi-line comments, attempt auto-clean
+            print(f"  Warning: CIF parsing error detected: {error_msg}")
+            print(f"  Attempting automatic CIF cleaning...")
+            
+            cleaned_path = clean_cif_for_ase(cif_path, verbose=verbose)
+            print(f"  Retrying with cleaned CIF: {cleaned_path}")
+            
+            # Retry with cleaned file
+            atoms = read(cleaned_path, format="cif")
+            print(f"  Success! CIF loaded after cleaning.")
+        else:
+            # Different error, re-raise
+            raise
     
     if verbose:
         print(f"  Number of atoms: {len(atoms)}")

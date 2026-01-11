@@ -1,0 +1,74 @@
+# Log generated: 2026-01-12 04:38:30
+# Command: python create_slab_from_cif.py \
+#   --cif-input 1.1.2CSO-0.5H2O/conventional_cell.cif \
+#   --miller 0 2 0 \
+#   --layers 1 \
+#   --vacuum 15.0 \
+#   --supercell 2 2 \
+#   --z-offset 1.0 \
+#   --format extxyz \
+#   --ortho-tolerance 0.001 \
+#   --require-ortho
+
+============================================================
+CaSO4 SLAB MODEL GENERATOR
+============================================================
+  Warning: CIF parsing error detected: Unexpected CIF file entry: "'"
+  Attempting automatic CIF cleaning...
+  Retrying with cleaned CIF: 1.1.2CSO-0.5H2O\conventional_cell_ase.cif
+  Success! CIF loaded after cleaning.
+
+------------------------------------------------------------
+ORTHOGONALITY CHECK
+------------------------------------------------------------
+Cell angles: alpha=90.0000, beta=90.0000, gamma=90.0000
+Tolerance: 0.001 degrees
+Status: ORTHOGONAL - Cell satisfies orthogonality criteria
+Action: Direct output (no orthogonalization needed)
+------------------------------------------------------------
+
+------------------------------------------------------------
+Z-OFFSET ADJUSTMENT
+------------------------------------------------------------
+Before: z range = [7.5000, 12.9289] Angstrom
+After:  z range = [1.0000, 6.4289] Angstrom
+Shift applied: -6.5000 Angstrom
+------------------------------------------------------------
+
+============================================================
+SLAB MODEL INFORMATION
+============================================================
+
+Atom Counts:
+  Ca :    24
+  H  :    24
+  O  :   108
+  S  :    24
+
+  Total:   180 atoms
+
+Cell Parameters:
+  a = 25.5130 Angstrom
+  b = 13.8536 Angstrom
+  c = 20.4289 Angstrom
+  alpha = 90.00 degrees
+  beta  = 90.00 degrees
+  gamma = 90.00 degrees
+
+Cell Volume: 7220.53 Angstrom^3
+
+Position Ranges:
+  x: [0.0000, 25.4195]
+  y: [0.2320, 13.5315]
+  z: [1.0000, 6.4289]
+============================================================
+
+Output saved: 1.1.2CSO-0.5H2O\conventional_cell_slab_020_L1_2x2.xyz
+  Total atoms: 180
+  Chemical formula: H24Ca24O108S24
+  Lattice parameters: 25.5130 13.8536 20.4289 90.00 90.00 90.00
+
+Slab model creation completed successfully!
+The output file can be used for AIMD and MLIP calculations.
+
+Log saved to: 1.1.2CSO-0.5H2O\conventional_cell_slab_020_L1_2x2.log

@@ -1,16 +1,23 @@
+## 1. Create pure CSO-nH2O slab models
 # calsium sulfate dihydrate
-python create_slab_from_cif.py --cif-input 1.1CSO-2H2O/conventional_cell.cif --miller 0 2 0 --layers 2 --vacuum 15.0 --supercell 2 2
+python create_slab_from_cif.py --cif-input 1.1.1CSO-2H2O/conventional_cell.cif --miller 0 2 0 --layers 1 --vacuum 15.0 --supercell 2 2
+
+# calcium sulfate intermediates
+python create_slab_from_cif.py --cif-input 1.1.2CSO-0.5H2O/conventional_cell.cif --miller 0 2 0 --layers 1 --vacuum 15.0 --supercell 2 2 --require-ortho
+python create_slab_from_cif.py --cif-input 1.1.2CSO-0.583H2O/conventional_cell.cif --miller 0 2 0 --layers 1 --vacuum 15.0 --supercell 2 2 --require-ortho
+python create_slab_from_cif.py --cif-input 1.1.2CSO-0.625H2O/conventional_cell.cif --miller 0 2 0 --layers 1 --vacuum 15.0 --supercell 2 2
 
 # calcium sulfate anhydrate
-python create_slab_from_cif.py --cif-input 1.2CSO/conventional_cell.cif --miller 0 2 0 --layers 3 --vacuum 15.0 --supercell 2 2 --require-ortho
+python create_slab_from_cif.py --cif-input 1.1.3CSO/conventional_cell.cif --miller 0 2 0 --layers 1 --vacuum 15.0 --supercell 2 2 --require-ortho
 
 
+## 2. Pack NH4+ to CSO-nH2O slab models
 python NH4_packing_CSOslab.py `
-    --slab-input 1.1CSO-2H2O/conventional_cell_slab_020_L2_2x2.xyz `
-    --output-dir 1.3CSO-2H2O+NH4 `
+    --slab-input 1.1.1CSO-2H2O/conventional_cell_slab_020_L1_2x2.xyz `
+    --output-dir 1.2.1CSO-2H2O+NH4 `
     --n-water 20 `
     --n-nh3 3 `
-    --n-nh4 3 `
+    --n-nh4 4 `
     --n-hpo4 2 `
     --auto-vacuum `
     --min-distance 2.5 `
@@ -22,11 +29,59 @@ python NH4_packing_CSOslab.py `
     --verbose
 
 python NH4_packing_CSOslab.py `
-    --slab-input 1.2CSO/conventional_cell_slab_020_L3_2x2.xyz `
-    --output-dir 1.4CSO+NH4 `
+    --slab-input 1.1.2CSO-0.5H2O/conventional_cell_slab_020_L1_2x2.xyz `
+    --output-dir 1.2.2CSO-0.5H2O+NH4 `
     --n-water 20 `
     --n-nh3 3 `
-    --n-nh4 3 `
+    --n-nh4 4 `
+    --n-hpo4 2 `
+    --auto-vacuum `
+    --min-distance 2.5 `
+    --z-reoffset 2 `
+    --wrap `
+    --no-boundary-cross `
+    --pbc-xyz `
+    --target-vacuum 18 `
+    --verbose
+
+python NH4_packing_CSOslab.py `
+    --slab-input 1.1.2CSO-0.583H2O/conventional_cell_slab_020_L1_2x2.xyz `
+    --output-dir 1.2.2CSO-0.583H2O+NH4 `
+    --n-water 20 `
+    --n-nh3 3 `
+    --n-nh4 4 `
+    --n-hpo4 2 `
+    --auto-vacuum `
+    --min-distance 2.5 `
+    --z-reoffset 2 `
+    --wrap `
+    --no-boundary-cross `
+    --pbc-xyz `
+    --target-vacuum 18 `
+    --verbose
+
+python NH4_packing_CSOslab.py `
+    --slab-input 1.1.2CSO-0.625H2O/conventional_cell_slab_020_L1_2x2.xyz `
+    --output-dir 1.2.2CSO-0.625H2O+NH4 `
+    --n-water 20 `
+    --n-nh3 3 `
+    --n-nh4 4 `
+    --n-hpo4 2 `
+    --auto-vacuum `
+    --min-distance 2.5 `
+    --z-reoffset 2 `
+    --wrap `
+    --no-boundary-cross `
+    --pbc-xyz `
+    --target-vacuum 18 `
+    --verbose
+
+python NH4_packing_CSOslab.py `
+    --slab-input 1.1.3CSO/conventional_cell_slab_020_L1_2x2.xyz `
+    --output-dir 1.2.3CSO+NH4 `
+    --n-water 20 `
+    --n-nh3 3 `
+    --n-nh4 4 `
     --n-hpo4 2 `
     --auto-vacuum `
     --min-distance 2.5 `

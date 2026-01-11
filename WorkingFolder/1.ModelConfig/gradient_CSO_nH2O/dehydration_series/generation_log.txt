@@ -1,0 +1,12 @@
+Gypsum Dehydration Series Generation Log
+==================================================
+
+Input CIF: gypsum_n2.cif
+Supercell: (2, 1, 2)
+Total atoms: 192
+CaSO4 units: 16
+Water molecules: 32
+n values: [2.0, 1.5, 1.0, 0.5, 0.0]
+Strategies: ['random', 'layer_ordered', 'hbond_weakest']
+Random seed: 42
+Output format: extxyz
