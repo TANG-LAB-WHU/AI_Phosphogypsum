@@ -54,7 +54,7 @@ def check_gpu():
 
 
 def run_optimization(
-    input_file: str = "CombinedSlab_with_CH4.xyz",
+    input_file: str = "conventional_cell_slab_020_L1_2x2_packed_w20_nh3_3_nh4_4_hpo4_2.xyz",
     output_file: str = "optimized_structure.xyz",
     model_name: str = "medium-mpa-0",
     fmax: float = 0.05,

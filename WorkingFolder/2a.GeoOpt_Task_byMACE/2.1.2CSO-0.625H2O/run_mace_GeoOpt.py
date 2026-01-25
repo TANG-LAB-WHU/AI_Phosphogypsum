@@ -54,7 +54,7 @@ def check_gpu():
 
 
 def run_optimization(
-    input_file: str = "CombinedSlab_with_CH4.xyz",
+    input_file: str = "conventional_cell_slab_020_L1_2x2.xyz",
     output_file: str = "optimized_structure.xyz",
     model_name: str = "medium-mpa-0",
     fmax: float = 0.05,
@@ -322,8 +322,8 @@ Examples:
     parser.add_argument(
         "--input", "-i",
         type=str,
-        default="CombinedSlab_with_CH4.xyz",
-        help="Input XYZ file (default: CombinedSlab_with_CH4.xyz)"
+        default="conventional_cell_slab_020_L1_2x2.xyz",
+        help="Input XYZ file (default: conventional_cell_slab_020_L1_2x2.xyz)"
     )
     parser.add_argument(
         "--output", "-o",
