@@ -61,21 +61,80 @@ Each subdirectory contains:
 
 ## Environment Setup
 
-### Prerequisites
+### Ubuntu 24.04 Setup (Recommended)
 
-1. Create and activate a conda environment with MACE:
+#### 1. Install NVIDIA Driver and CUDA Toolkit
 
-   ```bash
-   conda create -n mace_env python=3.10 -y
-   conda activate mace_env
-   ```
+```bash
+# Update system packages
+sudo apt update && sudo apt upgrade -y
 
-2. Install required packages:
+# Install NVIDIA driver (check your GPU compatibility)
+sudo apt install -y nvidia-driver-560
 
-   ```bash
-   pip install torch --index-url https://download.pytorch.org/whl/cu129
-   pip install mace-torch ase matplotlib numpy
-   ```
+# Reboot to load the driver
+sudo reboot
+
+# Verify driver installation
+nvidia-smi
+```
+
+#### 2. Install Miniconda
+
+```bash
+# Download Miniconda installer
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+
+# Run installer
+bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda3
+
+# Initialize conda
+$HOME/miniconda3/bin/conda init bash
+source ~/.bashrc
+
+# Verify installation
+conda --version
+```
+
+#### 3. Create mace_env Environment
+
+```bash
+# Create conda environment with Python 3.10
+conda create -n mace_env python=3.10 -y
+
+# Activate environment
+conda activate mace_env
+
+# Install PyTorch with CUDA 12.9 support
+pip install torch --index-url https://download.pytorch.org/whl/cu129
+
+# Install MACE and dependencies
+pip install mace-torch ase matplotlib numpy
+
+# Verify CUDA availability
+python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}'); print(f'CUDA version: {torch.version.cuda}')"
+```
+
+#### 4. (Optional) Install Additional Tools
+
+```bash
+# For visualization and analysis
+pip install nglview jupyter
+
+# For structure manipulation
+pip install pymatgen
+```
+
+### Quick Setup (All Platforms)
+
+If you already have conda and NVIDIA drivers installed:
+
+```bash
+conda create -n mace_env python=3.10 -y
+conda activate mace_env
+pip install torch --index-url https://download.pytorch.org/whl/cu129
+pip install mace-torch ase matplotlib numpy
+```
 
 ## Usage
 
