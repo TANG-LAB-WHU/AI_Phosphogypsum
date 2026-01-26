@@ -21,6 +21,14 @@ from ase.io.trajectory import Trajectory
 import torch
 import argparse
 
+# Check cuEquivariance availability
+CUEQ_AVAILABLE = False
+try:
+    import cuequivariance_ops_torch
+    CUEQ_AVAILABLE = True
+except ImportError:
+    pass
+
 # Available pretained MACE-MP models for Fe3O4-Ni + CH4 system
 AVAILABLE_MODELS = {
     "medium-mpa-0": "Latest recommended model (PBE+U, Materials Project)",
@@ -32,7 +40,7 @@ AVAILABLE_MODELS = {
 def check_gpu():
     """Check GPU availability and print info."""
     print("=" * 60)
-    print("GPU Information")
+    print("GPU & Acceleration Information")
     print("=" * 60)
     
     if torch.cuda.is_available():
@@ -49,6 +57,11 @@ def check_gpu():
         print("GPU Available: No (using CPU)")
         print("WARNING: CPU mode will be significantly slower!")
     
+    # cuEquivariance status
+    print(f"cuEquivariance Available: {'Yes' if CUEQ_AVAILABLE else 'No'}")
+    if CUEQ_AVAILABLE:
+        print("  Note: cuEquivariance provides GPU-accelerated tensor operations")
+    
     print("=" * 60)
     return device
 
@@ -56,7 +69,7 @@ def check_gpu():
 def run_optimization(
     input_file: str = "conventional_cell_slab_020_L1_2x2.xyz",
     output_file: str = "optimized_structure.xyz",
-    model_name: str = "medium-mpa-0",
+    model_name: str = "mace-matpes-r2scan-0",
     fmax: float = 0.05,
     max_steps: int = 500,
     optimizer: str = "BFGS",
@@ -65,6 +78,8 @@ def run_optimization(
     use_dispersion: bool = True,
     damping: str = "bj",
     save_trajectory: bool = True,
+    enable_cueq: bool = True,
+    dtype: str = "float64",
 ):
     """
     Run geometry optimization using MACE-MP potential.
@@ -77,9 +92,9 @@ def run_optimization(
         Output XYZ file for optimized structure
     model_name : str
         MACE-MP model to use. Available options:
-        - "medium-mpa-0": Latest recommended (default)
+        - "medium-mpa-0": Latest recommended (PBE+U, Materials Project) (PBE+U, Materials Project)
         - "mace-matpes-pbe-0": Pure PBE without +U
-        - "mace-matpes-r2scan-0": r2SCAN functional
+        - "mace-matpes-r2scan-0": r2SCAN functional (default)
     fmax : float
         Force convergence criterion (eV/Å)
     max_steps : int
@@ -96,6 +111,10 @@ def run_optimization(
         D3 damping function: "bj" (Becke-Johnson), "zero", "zerom", or "bjm"
     save_trajectory : bool
         Whether to save optimization trajectory
+    enable_cueq : bool
+        Whether to enable cuEquivariance GPU acceleration (default: True)
+    dtype : str
+        Floating point precision: "float32" (faster) or "float64" (more accurate, default)
     """
     
     # Import MACE calculator
@@ -147,14 +166,22 @@ def run_optimization(
     print(f"Device: {device}")
     print(f"Dispersion correction: {use_dispersion}")
     
-    # Use float64 for geometry optimization (more accurate)
+    # Determine if cuEquivariance should be used
+    use_cueq = enable_cueq and CUEQ_AVAILABLE
+    if enable_cueq and not CUEQ_AVAILABLE:
+        print("Warning: cuEquivariance requested but not available. Using standard e3nn backend.")
+    print(f"cuEquivariance acceleration: {'Enabled' if use_cueq else 'Disabled'}")
+    print(f"Data type: {dtype}")
+    
+    # Use specified dtype
     calc = mace_mp(
         model=model_name,
         device=device,
-        default_dtype="float64",  # Recommended for geometry optimization
+        default_dtype=dtype,
         dispersion=use_dispersion,
         damping=damping,          # D3 damping function (default: bj)
         dispersion_xc="pbe",      # PBE functional for D3 correction
+        enable_cueq=use_cueq,     # Enable cuEquivariance GPU acceleration
     )
     atoms.calc = calc
     
@@ -265,7 +292,9 @@ def run_optimization(
         f.write(f"Output file: {output_file}\n")
         f.write(f"Model: {model_name}\n")
         f.write(f"Device: {device}\n")
-        f.write(f"Dispersion: {use_dispersion}\n\n")
+        f.write(f"Dispersion: {use_dispersion}\n")
+        f.write(f"cuEquivariance: {use_cueq}\n")
+        f.write(f"Data type: {dtype}\n\n")
         
         f.write("Structure Info:\n")
         f.write(f"  Number of atoms: {n_atoms}\n")
@@ -310,6 +339,10 @@ Examples:
   python run_mace_GeoOpt.py
   python run_mace_GeoOpt.py --model mace-matpes-pbe-0
   python run_mace_GeoOpt.py --model mace-matpes-r2scan-0 --fmax 0.01
+  python run_mace_GeoOpt.py --no-cueq  # Disable cuEquivariance acceleration
+  python run_mace_GeoOpt.py --dtype float32  # Use float32 for faster performance
+
+Note: cuEquivariance GPU acceleration is enabled by default if available.
 """
     )
     parser.add_argument(
@@ -399,6 +432,8 @@ Examples:
         use_dispersion=not args.no_dispersion,
         damping=args.damping,
         save_trajectory=True,
+        enable_cueq=not args.no_cueq,
+        dtype=args.dtype,
     )
 
 
