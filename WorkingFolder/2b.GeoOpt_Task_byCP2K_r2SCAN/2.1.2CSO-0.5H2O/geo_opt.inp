@@ -1,7 +1,7 @@
-@SET PROJECT_NAME gypsum_slab_geoopt
+﻿@SET PROJECT_NAME gypsum_slab_geoopt
 @SET EPS_SCF 1.0E-6
 @SET CUT_OFF 420
-@SET MAX_SCF 120
+@SET MAX_SCF 150
 
 &GLOBAL
   PROJECT_NAME  ${PROJECT_NAME}
@@ -37,7 +37,6 @@
       MAX_SCF      ${MAX_SCF}
       EPS_SCF      ${EPS_SCF}
       SCF_GUESS    ATOMIC
-      IGNORE_CONVERGENCE_FAILURE
       &OT
         MINIMIZER       DIIS
         PRECONDITIONER  FULL_SINGLE_INVERSE
@@ -60,18 +59,16 @@
     &END SCF
     &XC
       &XC_FUNCTIONAL
-        &PBE
-          PARAMETRIZATION REVPBE
-          SCALE_X 1.0
-          SCALE_C 1.0
-        &END PBE
+        &MGGA_X_R2SCAN
+        &END MGGA_X_R2SCAN
+        &MGGA_C_R2SCAN
+        &END MGGA_C_R2SCAN
       &END XC_FUNCTIONAL
-      ! D4 dispersion correction (superior for H-bonded systems)
       &VDW_POTENTIAL
-        POTENTIAL_TYPE  PAIR_POTENTIAL
+        POTENTIAL_TYPE PAIR_POTENTIAL
         &PAIR_POTENTIAL
           TYPE           DFTD4
-          REFERENCE_FUNCTIONAL revPBE
+          REFERENCE_FUNCTIONAL r2SCAN
           R_CUTOFF       15.0
           D4_CUTOFF      30.0
         &END PAIR_POTENTIAL
@@ -90,31 +87,31 @@
   &SUBSYS
     &CELL
       ! Cell vectors from XYZ file (in Angstrom)
-      A   25.513 0.0 0.0 
+      A   25.513 0.0 0.0
       B   0.0 13.8536 0.0
       C   0.0 0.0 20.428900214075313
       PERIODIC  XY         ! Slab model: periodic in X and Y only
     &END CELL
     &TOPOLOGY
-      COORD_FILE_NAME   conventional_cell_slab_020_L1_2x2.xyz
+      COORD_FILE_NAME   optimized_structure_extxyz_wrap.xyz
       COORD_FILE_FORMAT XYZ
     &END TOPOLOGY
     ! Basis sets and pseudopotentials for each element
     &KIND Ca
-      BASIS_SET ORB DZVP-MOLOPT-PBE-GTH-q10
-      POTENTIAL GTH-PBE-q10
+      BASIS_SET DZVP-MOLOPT-SCAN-GTH-q10
+      POTENTIAL GTH-SCAN-q10
     &END KIND
     &KIND O
-      BASIS_SET ORB DZVP-MOLOPT-PBE-GTH-q6
-      POTENTIAL GTH-PBE-q6
+      BASIS_SET DZVP-MOLOPT-SCAN-GTH-q6
+      POTENTIAL GTH-SCAN-q6
     &END KIND
     &KIND S
-      BASIS_SET ORB DZVP-MOLOPT-PBE-GTH-q6
-      POTENTIAL GTH-PBE-q6
+      BASIS_SET DZVP-MOLOPT-SCAN-GTH-q6
+      POTENTIAL GTH-SCAN-q6
     &END KIND
     &KIND H
-      BASIS_SET ORB TZV2P-MOLOPT-PBE-GTH-q1
-      POTENTIAL GTH-PBE-q1
+      BASIS_SET TZV2P-MOLOPT-SCAN-GTH-q1
+      POTENTIAL GTH-SCAN-q1
     &END KIND
   &END SUBSYS
 &END FORCE_EVAL

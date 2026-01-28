@@ -373,7 +373,7 @@ Note: cuEquivariance GPU acceleration is enabled by default if available.
         "--fmax",
         type=float,
         default=0.00001,
-        help="Force convergence criterion in eV/Å (default: 0.0001)"
+        help="Force convergence criterion in eV/Å (default: 0.00001)"
     )
     parser.add_argument(
         "--max-steps",

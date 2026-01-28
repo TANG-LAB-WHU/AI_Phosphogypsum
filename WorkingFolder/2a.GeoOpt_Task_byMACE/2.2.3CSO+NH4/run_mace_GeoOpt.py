@@ -368,7 +368,7 @@ Note: cuEquivariance GPU acceleration is enabled by default if available.
         "--fmax",
         type=float,
         default=0.00001,
-        help="Force convergence criterion in eV/Å (default: 0.0001)"
+        help="Force convergence criterion in eV/Å (default: 0.00001)"
     )
     parser.add_argument(
         "--max-steps",
@@ -399,6 +399,18 @@ Note: cuEquivariance GPU acceleration is enabled by default if available.
         "--list-models",
         action="store_true",
         help="List available models and exit"
+    )
+    parser.add_argument(
+        "--no-cueq",
+        action="store_true",
+        help="Disable cuEquivariance GPU acceleration (enabled by default if available)"
+    )
+    parser.add_argument(
+        "--dtype",
+        type=str,
+        choices=["float32", "float64"],
+        default="float64",
+        help="Floating point precision: float32 (faster) or float64 (more accurate, default)"
     )
     
     args = parser.parse_args()
