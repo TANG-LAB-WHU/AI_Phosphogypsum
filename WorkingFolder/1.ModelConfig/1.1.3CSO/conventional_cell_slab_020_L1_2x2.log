@@ -1,0 +1,69 @@
+# Log generated: 2026-01-12 04:38:34
+# Command: python create_slab_from_cif.py \
+#   --cif-input 1.1.3CSO/conventional_cell.cif \
+#   --miller 0 2 0 \
+#   --layers 1 \
+#   --vacuum 15.0 \
+#   --supercell 2 2 \
+#   --z-offset 1.0 \
+#   --format extxyz \
+#   --ortho-tolerance 0.001 \
+#   --require-ortho
+
+============================================================
+CaSO4 SLAB MODEL GENERATOR
+============================================================
+
+------------------------------------------------------------
+ORTHOGONALITY CHECK
+------------------------------------------------------------
+Cell angles: alpha=90.0000, beta=90.0000, gamma=90.0000
+Tolerance: 0.001 degrees
+Status: ORTHOGONAL - Cell satisfies orthogonality criteria
+Action: Direct output (no orthogonalization needed)
+------------------------------------------------------------
+
+------------------------------------------------------------
+Z-OFFSET ADJUSTMENT
+------------------------------------------------------------
+Before: z range = [7.5000, 13.4085] Angstrom
+After:  z range = [1.0000, 6.9085] Angstrom
+Shift applied: -6.5000 Angstrom
+------------------------------------------------------------
+
+============================================================
+SLAB MODEL INFORMATION
+============================================================
+
+Atom Counts:
+  Ca :    16
+  O  :    64
+  S  :    16
+
+  Total:    96 atoms
+
+Cell Parameters:
+  a = 12.7684 Angstrom
+  b = 14.1137 Angstrom
+  c = 20.9085 Angstrom
+  alpha = 90.00 degrees
+  beta  = 90.00 degrees
+  gamma = 90.00 degrees
+
+Cell Volume: 3767.92 Angstrom^3
+
+Position Ranges:
+  x: [0.1915, 12.5769]
+  y: [0.0000, 12.9141]
+  z: [1.0000, 6.9085]
+============================================================
+
+Output saved: 1.1.3CSO\conventional_cell_slab_020_L1_2x2.xyz
+  Total atoms: 96
+  Chemical formula: Ca16O64S16
+  Lattice parameters: 12.7684 14.1137 20.9085 90.00 90.00 90.00
+
+Slab model creation completed successfully!
+The output file can be used for AIMD and MLIP calculations.
+
+Log saved to: 1.1.3CSO\conventional_cell_slab_020_L1_2x2.log
