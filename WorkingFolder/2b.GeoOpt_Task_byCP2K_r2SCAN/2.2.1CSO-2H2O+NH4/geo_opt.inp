@@ -1,4 +1,4 @@
-@SET PROJECT_NAME gypsum_slab_nh4_geoopt
+﻿@SET PROJECT_NAME gypsum_slab_nh4_geoopt
 @SET EPS_SCF 1.0E-6
 @SET CUT_OFF 420
 @SET MAX_SCF 150
@@ -89,7 +89,7 @@
     &CELL
       A   11.358 0.0 0.0
       B   -5.147950824045998 11.470885982880008 0.0
-      C    0.0 0.0 60.00523077496534
+      C   0.0 0.0 60.05492439424537
       PERIODIC  XY
     &END CELL
     &TOPOLOGY
