@@ -1,4 +1,4 @@
-@SET PROJECT_NAME gypsum_slab_geoopt
+﻿@SET PROJECT_NAME gypsum_slab_geoopt
 @SET EPS_SCF 1.0E-6
 @SET CUT_OFF 420
 @SET MAX_SCF 150
@@ -87,9 +87,9 @@
   &SUBSYS
     &CELL
       ! Cell vectors from XYZ file (in Angstrom)
-      A   24.0688 0.0 0.0 
-      B   -0.11705465205553547 25.348880266190132 0.0
-      C   0.0 0.0 21.72538446
+      A   11.358 0.0 0.0
+      B   -5.147950824045998 11.470885982880008 0.0
+      C   0.0 0.0 29.527031199999996
       PERIODIC  XY         ! Slab model: periodic in X and Y only
     &END CELL
     &TOPOLOGY
