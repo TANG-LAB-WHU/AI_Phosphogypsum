@@ -1,10 +1,33 @@
-*.DS_Store
+# OS generated files
+.DS_Store
 
+# CP2K and Simulation output/temporary files
 *.wfn
 *.wfn.*
 *.Hessian
 *.restart
-
 optimization.traj
 optimization.log
 optimization_trajectory.xyz
+*.bak
+*.bak-*
+*.tmp
+
+# Python artifacts
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.env/
+env/
+lib/
+bin/
+
+# IDE settings
+.vscode/
+.idea/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/

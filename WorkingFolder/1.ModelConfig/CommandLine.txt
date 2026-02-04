@@ -6,6 +6,7 @@ python create_slab_from_cif.py --cif-input 1.1.1CSO-2H2O/conventional_cell.cif -
 python create_slab_from_cif.py --cif-input 1.1.2CSO-0.5H2O/conventional_cell.cif --miller 0 2 0 --layers 1 --vacuum 15.0 --supercell 2 2 --require-ortho
 python create_slab_from_cif.py --cif-input 1.1.2CSO-0.583H2O/conventional_cell.cif --miller 0 2 0 --layers 1 --vacuum 15.0 --supercell 2 2 --require-ortho
 python create_slab_from_cif.py --cif-input 1.1.2CSO-0.625H2O/conventional_cell.cif --miller 0 2 0 --layers 1 --vacuum 15.0 --supercell 2 2
+python create_slab_from_cif.py --cif-input 1.1.2CSO-0.625H2O_improved/conventional_cell.cif --miller 0 2 0 --layers 1 --vacuum 15.0 --supercell 2 2 --skip-ortho
 
 # calcium sulfate anhydrate
 python create_slab_from_cif.py --cif-input 1.1.3CSO/conventional_cell.cif --miller 0 2 0 --layers 1 --vacuum 15.0 --supercell 2 2 --require-ortho
