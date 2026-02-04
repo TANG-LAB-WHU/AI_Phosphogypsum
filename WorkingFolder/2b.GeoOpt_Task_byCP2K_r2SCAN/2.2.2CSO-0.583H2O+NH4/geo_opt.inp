@@ -1,4 +1,4 @@
-@SET PROJECT_NAME gypsum_slab_nh4_geoopt
+﻿@SET PROJECT_NAME gypsum_slab_nh4_geoopt
 @SET EPS_SCF 1.0E-6
 @SET CUT_OFF 420
 @SET MAX_SCF 150
