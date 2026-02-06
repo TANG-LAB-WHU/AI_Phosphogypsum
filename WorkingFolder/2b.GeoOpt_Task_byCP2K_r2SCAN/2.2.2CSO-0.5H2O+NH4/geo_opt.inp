@@ -44,7 +44,7 @@
         ENERGY_GAP      0.1
         STEPSIZE        0.05        ! Reduced from 0.1 for better stability
         PRECOND_SOLVER  INVERSE_UPDATE
-        LINESEARCH      3POINT      ! Added line search for improved convergence
+        LINESEARCH      ADAPT
       &END OT
       &OUTER_SCF
         MAX_SCF     30
