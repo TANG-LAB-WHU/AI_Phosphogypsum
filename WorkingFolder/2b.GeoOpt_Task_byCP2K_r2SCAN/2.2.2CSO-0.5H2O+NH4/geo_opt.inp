@@ -17,7 +17,7 @@
     POTENTIAL_FILE_NAME  POTENTIAL_UZH
     CHARGE        0
     MULTIPLICITY  1
-    UKS
+    # UKS
     &MGRID
       CUTOFF       ${CUT_OFF}
       REL_CUTOFF   60
@@ -39,11 +39,12 @@
       EPS_SCF      ${EPS_SCF}
       SCF_GUESS    ATOMIC
       &OT
-        MINIMIZER       DIIS
+        MINIMIZER       DIIS       
         PRECONDITIONER  FULL_SINGLE_INVERSE
         ENERGY_GAP      0.1
-        STEPSIZE        0.1
-        PRECOND_SOLVER INVERSE_UPDATE
+        STEPSIZE        0.05        ! Reduced from 0.1 for better stability
+        PRECOND_SOLVER  INVERSE_UPDATE
+        LINESEARCH      3POINT      ! Added line search for improved convergence
       &END OT
       &OUTER_SCF
         MAX_SCF     30
@@ -126,15 +127,16 @@
 &MOTION
   &GEO_OPT
     TYPE          MINIMIZATION
-    OPTIMIZER     BFGS
+    OPTIMIZER     LBFGS         ! Changed from BFGS - more stable for large systems
     MAX_ITER      200
     MAX_DR        3.0E-3
     MAX_FORCE     4.5E-4
     RMS_DR        1.5E-3
     RMS_FORCE     3.0E-4
-    &BFGS
-      TRUST_RADIUS  0.25
-    &END BFGS
+    &LBFGS
+      MAX_H_RANK    20          ! History size for Hessian approximation
+      TRUST_RADIUS  0.15        ! Reduced from 0.25 for better stability
+    &END LBFGS
   &END GEO_OPT
   &PRINT
     &TRAJECTORY
