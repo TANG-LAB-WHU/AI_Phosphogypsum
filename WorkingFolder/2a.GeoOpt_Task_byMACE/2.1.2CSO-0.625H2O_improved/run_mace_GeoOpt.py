@@ -373,7 +373,7 @@ Note: cuEquivariance GPU acceleration is enabled by default if available.
     parser.add_argument(
         "--max-steps",
         type=int,
-        default=2000,
+        default=10000,
         help="Maximum optimization steps (default: 10000)"
     )
     parser.add_argument(
