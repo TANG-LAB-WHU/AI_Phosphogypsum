@@ -24,8 +24,8 @@ if not exist "geo_opt.inp" (
     exit /b 1
 )
 
-if not exist "conventional_cell_slab_020_L1_2x2.xyz" (
-    echo ERROR: Structure file conventional_cell_slab_020_L1_2x2.xyz not found. Aborting.
+if not exist "optimized_structure_extxyz_wrap.xyz" (
+    echo ERROR: Structure file optimized_structure_extxyz_wrap.xyz not found. Aborting.
     pause
     exit /b 1
 )
@@ -37,8 +37,17 @@ if not exist "docker-compose-cp2k.yml" (
 )
 
 echo    - geo_opt.inp: OK
-echo    - conventional_cell_slab_020_L1_2x2.xyz: OK
+echo    - optimized_structure_extxyz_wrap.xyz: OK
 echo    - docker-compose-cp2k.yml: OK
+echo.
+
+REM --------------------------------------------------------------------
+REM 1.5 Update cell vectors in geo_opt.inp from extxyz Lattice
+REM --------------------------------------------------------------------
+echo [Step 1.5] Syncing cell vectors from optimized structure...
+
+powershell -NoProfile -Command "$xyz = Get-Content 'optimized_structure_extxyz_wrap.xyz' | Select-Object -Index 1; $match = [regex]::Match($xyz, 'Lattice=[\x22]([^\x22]+)[\x22]'); if ($match.Success) { $vals = $match.Groups[1].Value -split ' '; $A = '      A   ' + $vals[0] + ' ' + $vals[1] + ' ' + $vals[2]; $B = '      B   ' + $vals[3] + ' ' + $vals[4] + ' ' + $vals[5]; $C = '      C   ' + $vals[6] + ' ' + $vals[7] + ' ' + $vals[8]; $inp = Get-Content 'geo_opt.inp'; $newInp = @(); foreach ($line in $inp) { if ($line -match '^\s*A\s+') { $newInp += $A } elseif ($line -match '^\s*B\s+') { $newInp += $B } elseif ($line -match '^\s*C\s+') { $newInp += $C } else { $newInp += $line } }; $newInp | Set-Content 'geo_opt.inp' -Encoding UTF8; Write-Host '   Cell vectors updated:' -ForegroundColor Green; Write-Host ('   A: ' + $vals[0] + ' ' + $vals[1] + ' ' + $vals[2]); Write-Host ('   B: ' + $vals[3] + ' ' + $vals[4] + ' ' + $vals[5]); Write-Host ('   C: ' + $vals[6] + ' ' + $vals[7] + ' ' + $vals[8]) } else { Write-Host '   WARNING: Could not parse Lattice from extxyz file' -ForegroundColor Yellow }"
+
 echo.
 
 REM --------------------------------------------------------------------

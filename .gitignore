@@ -4,3 +4,7 @@
 *.wfn.*
 *.Hessian
 *.restart
+
+optimization.traj
+optimization.log
+optimization_trajectory.xyz

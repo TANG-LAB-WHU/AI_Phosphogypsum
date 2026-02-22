@@ -1,0 +1,32 @@
+MACE Geometry Optimization Report
+============================================================
+
+Date: 2026-01-28 20:59:16
+Input file: conventional_cell_slab_020_L1_2x2.xyz
+Output file: conventional_cell_slab_020_L1_2x2_mace_matpes_r2scan_0_optimized.xyz
+Model: mace-matpes-r2scan-0
+Device: cuda
+Dispersion: True
+cuEquivariance: True
+Data type: float64
+
+Structure Info:
+  Number of atoms: 192
+  Elements: {'O', 'Ca', 'S', 'H'}
+  Cell parameters: a=11.3580, b=12.5731, c=29.5270 Å
+
+Optimization Parameters:
+  Optimizer: BFGS
+  fmax: 1e-05 eV/Å
+  max_steps: 5000
+  Fixed atoms: 0
+
+Results:
+  Converged: True
+  Steps: 106
+  Initial energy: -1370.291091 eV
+  Final energy: -1374.001898 eV
+  Energy change: -3.710806 eV
+  Initial max force: 1.896612 eV/Å
+  Final max force: 0.000007 eV/Å
+  Optimization time: 69.0 s
