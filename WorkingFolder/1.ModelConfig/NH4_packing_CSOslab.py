@@ -529,15 +529,15 @@ Examples:
     parser.add_argument(
         "--min-distance",
         type=float,
-        default=2.5,
-        help="Minimum distance between atoms in Angstrom (default: 2.5)"
+        default=3.5,
+        help="Minimum distance between atoms in Angstrom (default: 3.5)"
     )
     
     parser.add_argument(
         "--z-buffer",
         type=float,
-        default=2.0,
-        help="Minimum distance from slab surface to molecules in Angstrom (default: 2.0)"
+        default=3.0,
+        help="Minimum distance from slab surface to molecules in Angstrom (default: 3.0)"
     )
     
     parser.add_argument(

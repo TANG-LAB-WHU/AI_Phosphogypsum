@@ -110,3 +110,36 @@ python NH4_packing_CSOslab.py `
     --pbc-xyz `
     --target-vacuum 18 `
     --verbose
+
+
+python NH4_packing_CSOslab.py `
+    --slab-input 1.1.2CSO-0.625H2O_improved/conventional_cell_slab_020_L1_2x2.xyz `
+    --output-dir 1.2.2CSO-0.625H2O_improved+NH4_2 `
+    --n-water 20 `
+    --n-nh3 3 `
+    --n-nh4 4 `
+    --n-hpo4 2 `
+    --auto-vacuum `
+    --min-distance 2.5 `
+    --z-reoffset 2 `
+    --wrap `
+    --no-boundary-cross `
+    --pbc-xyz `
+    --target-vacuum 10 `
+    --verbose
+
+python NH4_packing_CSOslab.py `
+    --slab-input 1.1.2CSO-0.625H2O_improved/conventional_cell_slab_020_L1_2x2.xyz `
+    --output-dir 1.2.2CSO-0.625H2O_improved+NH4_3 `
+    --n-water 20 `
+    --n-nh3 3 `
+    --n-nh4 4 `
+    --n-hpo4 2 `
+    --auto-vacuum `
+    --min-distance 3.5 `
+    --z-reoffset 2 `
+    --wrap `
+    --no-boundary-cross `
+    --pbc-xyz `
+    --target-vacuum 10 `
+    --verbose
