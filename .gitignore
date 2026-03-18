@@ -31,3 +31,6 @@ bin/
 
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
+
+# testing folder
+testing/
