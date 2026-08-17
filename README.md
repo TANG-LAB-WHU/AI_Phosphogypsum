@@ -4,7 +4,7 @@ AI-empowering upcycling of world-issue phosphogypsum (PG) through computational 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Overview
+## Overvie
 
 This repository contains computational workflows for studying the dehydration mechanisms and surface chemistry of phosphogypsum (calcium sulfate hydrates, CaSO₄·nH₂O) using:
 
