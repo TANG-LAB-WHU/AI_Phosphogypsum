@@ -1,0 +1,149 @@
+@SET PROJECT_NAME gypsum_slab_nh4_geoopt
+@SET EPS_SCF 1.5E-6
+@SET CUT_OFF 420
+@SET MAX_SCF 200
+
+&GLOBAL
+  PROJECT_NAME  ${PROJECT_NAME}
+  RUN_TYPE      GEO_OPT
+  PRINT_LEVEL   MEDIUM
+&END GLOBAL
+
+&FORCE_EVAL
+  METHOD           QUICKSTEP
+  &DFT
+    BASIS_SET_FILE_NAME  BASIS_MOLOPT_UZH
+    POTENTIAL_FILE_NAME  POTENTIAL_UZH
+    CHARGE        0
+    MULTIPLICITY  1
+
+    &MGRID
+      CUTOFF      ${CUT_OFF}
+      REL_CUTOFF  60
+      NGRIDS      5
+    &END MGRID
+
+    &QS
+      METHOD           GPW
+      EPS_DEFAULT      1.0E-12
+      EXTRAPOLATION    ASPC
+      EXTRAPOLATION_ORDER 3
+    &END QS
+
+    &POISSON
+      PERIODIC    XY
+      PSOLVER     MT
+      &MT
+        REL_CUTOFF 2.0
+      &END MT
+    &END POISSON
+
+    &SCF
+      SCF_GUESS    ATOMIC
+      EPS_SCF      ${EPS_SCF}
+      MAX_SCF      ${MAX_SCF}
+      &OT
+        MINIMIZER           DIIS
+        PRECONDITIONER      FULL_SINGLE_INVERSE
+        ENERGY_GAP          0.001
+      &END OT
+      &OUTER_SCF
+        MAX_SCF    10
+        EPS_SCF    ${EPS_SCF}
+      &END OUTER_SCF
+      &PRINT
+        &RESTART
+          BACKUP_COPIES  1
+          &EACH
+            GEO_OPT 1
+          &END EACH
+        &END RESTART
+      &END PRINT
+    &END SCF
+
+    &XC
+      &XC_FUNCTIONAL
+        &MGGA_X_R2SCAN
+        &END MGGA_X_R2SCAN
+        &MGGA_C_R2SCAN
+        &END MGGA_C_R2SCAN
+      &END XC_FUNCTIONAL
+      &VDW_POTENTIAL
+        POTENTIAL_TYPE  PAIR_POTENTIAL
+        &PAIR_POTENTIAL
+          TYPE                  DFTD4
+          PARAMETER_FILE_NAME   dftd4.dat
+          REFERENCE_FUNCTIONAL  r2SCAN
+          R_CUTOFF              15.0
+        &END PAIR_POTENTIAL
+      &END VDW_POTENTIAL
+    &END XC
+  &END DFT
+
+  &SUBSYS
+    &CELL
+      A   24.0688 0.0 0.0
+      B   -24.185854652055536 25.348880266190136 0.0
+      C   0.0 0.0 36.8296146567733
+      PERIODIC  XY
+    &END CELL
+    &TOPOLOGY
+      COORD_FILE_FORMAT  XYZ
+      COORD_FILE_NAME    2.2.2CSO-0.625H2O+NH4.xyz
+    &END TOPOLOGY
+
+    &KIND Ca
+      BASIS_SET DZVP-MOLOPT-SCAN-GTH-q10
+      POTENTIAL GTH-SCAN-q10
+    &END KIND
+    &KIND O
+      BASIS_SET DZVP-MOLOPT-SCAN-GTH-q6
+      POTENTIAL GTH-SCAN-q6
+    &END KIND
+    &KIND S
+      BASIS_SET DZVP-MOLOPT-SCAN-GTH-q6
+      POTENTIAL GTH-SCAN-q6
+    &END KIND
+    &KIND H
+      BASIS_SET TZV2P-MOLOPT-SCAN-GTH-q1
+      POTENTIAL GTH-SCAN-q1
+    &END KIND
+    &KIND N
+      BASIS_SET DZVP-MOLOPT-SCAN-GTH-q5
+      POTENTIAL GTH-SCAN-q5
+    &END KIND
+    &KIND P
+      BASIS_SET DZVP-MOLOPT-SCAN-GTH-q5
+      POTENTIAL GTH-SCAN-q5
+    &END KIND
+  &END SUBSYS
+&END FORCE_EVAL
+
+&MOTION
+  &GEO_OPT
+    TYPE        MINIMIZATION
+    OPTIMIZER   BFGS
+    MAX_ITER    500
+    MAX_DR      3.0E-3
+    MAX_FORCE   4.5E-4
+    RMS_DR      1.5E-3
+    RMS_FORCE   3.0E-4
+    &BFGS
+      TRUST_RADIUS 0.2
+    &END BFGS
+  &END GEO_OPT
+  &PRINT
+    &TRAJECTORY
+      FORMAT XYZ
+      &EACH
+        GEO_OPT 1
+      &END EACH
+    &END TRAJECTORY
+    &RESTART
+      BACKUP_COPIES 1
+      &EACH
+        GEO_OPT 1
+      &END EACH
+    &END RESTART
+  &END PRINT
+&END MOTION
