@@ -1,0 +1,83 @@
+# ====================================================================
+# LAMMPS Input Script: Large-Scale Hydrothermal Conversion of Phosphogypsum
+# Temperature: 453.15 K (180 °C Hydrothermal condition)
+# Pressure: 50.0 bar
+# Potential: Deep Potential (DeePMD-kit frozen/compressed model)
+# ====================================================================
+
+# 1. Initialization
+units           metal
+dimension       3
+boundary        p p p
+atom_style      atomic
+
+# 2. Structure setup
+read_data       data.phosphogypsum_hydrothermal
+
+# Types: 1=Ca, 2=O, 3=S, 4=H, 5=N, 6=P
+mass            1 40.078   # Ca
+mass            2 15.999   # O
+mass            3 32.065   # S
+mass            4  1.008   # H
+mass            5 14.007   # N
+mass            6 30.974   # P
+
+# 3. Interatomic Potential (DeePMD)
+pair_style      deepmd frozen_model_compressed.pb
+pair_coeff      * *
+
+# 4. Group Definitions
+group           g_Ca    type 1
+group           g_O     type 2
+group           g_S     type 3
+group           g_H     type 4
+group           g_N     type 5
+group           g_P     type 6
+group           g_water type 2 4
+group           g_reactants type 1 3 5 6
+
+# 5. Neighbor list settings
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes
+
+# 6. Initial Velocities at 180 °C (453.15 K)
+velocity        all create 453.15 424242 rot yes dist gaussian
+
+# 7. Energy Minimization (Eliminate any initial supercell packing overlap)
+min_style       cg
+minimize        1.0e-8 1.0e-8 1000 5000
+reset_timestep  0
+
+# 8. Thermodynamic Output Settings
+thermo_style    custom step time temp press pe ke etotal vol density lx ly lz pxx pyy pzz
+thermo          500
+
+# 9. In-situ Diagnostics: Radial Distribution Functions (RDFs)
+compute         c_rdf all rdf 100 1 2 1 6 6 2 5 4 3 2
+# 1-2: Ca-O, 1-6: Ca-P, 6-2: P-O, 5-4: N-H, 3-2: S-O
+fix             f_rdf all ave/time 100 10 1000 c_rdf[*] file hydrothermal_rdf.out mode vector
+
+# 10. In-situ Diagnostics: Mean Squared Displacement (MSD)
+compute         msd_Ca g_Ca msd
+compute         msd_P  g_P  msd
+compute         msd_S  g_S  msd
+compute         msd_N  g_N  msd
+compute         msd_wat g_water msd
+fix             f_msd all ave/time 100 1 100 c_msd_Ca[4] c_msd_P[4] c_msd_S[4] c_msd_N[4] c_msd_wat[4] file hydrothermal_msd.out
+
+# 11. NPT Hydrothermal Relaxation Stage (50 ps, 180 °C, 50 bar)
+timestep        0.0005  # 0.5 fs
+fix             f_npt all npt temp 453.15 453.15 0.05 iso 50.0 50.0 0.5
+run             100000
+unfix           f_npt
+
+# 12. NVT Hydrothermal Production Dynamics Stage (500 ps to 10 ns)
+dump            d_trj all custom 2000 hydrothermal_prod.lammpstrj id type x y z vx vy vz fx fy fz
+dump_modify     d_trj sort id
+
+fix             f_nvt all nvt temp 453.15 453.15 0.05
+run             1000000
+
+# 13. Completion
+write_data      final_hydrothermal_relaxed.data
+write_restart   final_hydrothermal.restart

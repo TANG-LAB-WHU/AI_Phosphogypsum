@@ -1,0 +1,195 @@
+{
+    "type_map": ["Ca", "O", "S", "H", "N", "P"],
+    "mass_map": [40.078, 15.999, 32.065, 1.008, 14.007, 30.974],
+    "init_data_prefix": "../00.init_seeds",
+    "init_data_sys": [
+        "init_3.1.1CSO-2H2O",
+        "init_3.1.2CSO-0.583H2O",
+        "init_3.1.2CSO-0.5H2O",
+        "init_3.1.2CSO-0.625H2O",
+        "init_3.1.3CSO",
+        "init_3.2.1CSO-2H2O+NH4",
+        "init_3.2.2CSO-0.583H2O+NH4",
+        "init_3.2.2CSO-0.5H2O+NH4",
+        "init_3.2.2CSO-0.625H2O+NH4",
+        "init_3.2.3CSO+NH4",
+        "init_geo_2.1.1CSO-2H2O",
+        "init_geo_2.1.2CSO-0.583H2O",
+        "init_geo_2.1.2CSO-0.5H2O",
+        "init_geo_2.1.2CSO-0.625H2O",
+        "init_geo_2.1.3CSO",
+        "init_geo_2.2.1CSO-2H2O+NH4",
+        "init_geo_2.2.2CSO-0.583H2O+NH4",
+        "init_geo_2.2.2CSO-0.5H2O+NH4",
+        "init_geo_2.2.2CSO-0.625H2O+NH4",
+        "init_geo_2.2.3CSO+NH4"
+    ],
+    "sys_format": "vasp/poscar",
+    "sys_configs_prefix": "../../1.ModelConfig",
+    "sys_configs": [
+        ["1.1.1CSO-2H2O/conventional_cell_slab_020_L1_2x2.xyz"],
+        ["1.1.2CSO-0.583H2O/conventional_cell_slab_020_L1_2x2.xyz"],
+        ["1.1.2CSO-0.5H2O/conventional_cell_slab_020_L1_2x2.xyz"],
+        ["1.1.2CSO-0.625H2O/conventional_cell_slab_020_L1_2x2.xyz"],
+        ["1.1.3CSO/conventional_cell_slab_020_L1_2x2.xyz"],
+        ["1.2.1CSO-2H2O+NH4/conventional_cell_slab_020_L1_2x2_packed_w20_nh3_3_nh4_4_hpo4_2.xyz"],
+        ["1.2.2CSO-0.583H2O+NH4/conventional_cell_slab_020_L1_2x2_packed_w20_nh3_3_nh4_4_hpo4_2.xyz"],
+        ["1.2.2CSO-0.5H2O+NH4/conventional_cell_slab_020_L1_2x2_packed_w20_nh3_3_nh4_4_hpo4_2.xyz"],
+        ["1.2.2CSO-0.625H2O+NH4/conventional_cell_slab_020_L1_2x2_packed_w20_nh3_3_nh4_4_hpo4_2.xyz"],
+        ["1.2.3CSO+NH4/conventional_cell_slab_020_L1_2x2_packed_w20_nh3_3_nh4_4_hpo4_2.xyz"]
+    ],
+    "numb_models": 4,
+    "default_training_param": {
+        "model": {
+            "type_map": ["Ca", "O", "S", "H", "N", "P"],
+            "descriptor": {
+                "type": "se_e2_a",
+                "sel": [120, 300, 120, 200, 60, 40],
+                "rcut_smth": 0.50,
+                "rcut": 6.00,
+                "neuron": [25, 50, 100],
+                "resnet_dt": false,
+                "axis_neuron": 16,
+                "seed": 1
+            },
+            "fitting_net": {
+                "neuron": [240, 240, 240],
+                "resnet_dt": true,
+                "seed": 1
+            }
+        },
+        "learning_rate": {
+            "type": "exp",
+            "decay_steps": 5000,
+            "start_lr": 0.001,
+            "stop_lr": 3.51e-8
+        },
+        "loss": {
+            "type": "ener",
+            "start_pref_e": 0.02,
+            "limit_pref_e": 1.0,
+            "start_pref_f": 1000,
+            "limit_pref_f": 1.0,
+            "start_pref_v": 0.0,
+            "limit_pref_v": 0.0
+        },
+        "training": {
+            "training_data": {
+                "systems": [],
+                "batch_size": "auto"
+            },
+            "validation_data": {
+                "systems": [],
+                "batch_size": "auto",
+                "numb_btch": 1
+            },
+            "numb_steps": 400000,
+            "seed": 1,
+            "disp_file": "lcurve.out",
+            "disp_freq": 1000,
+            "save_freq": 10000
+        }
+    },
+    "model_devi_dt": 0.0005,
+    "model_devi_skip": 10,
+    "model_devi_f_trust_lo": 0.05,
+    "model_devi_f_trust_hi": 0.20,
+    "model_devi_clean_traj": false,
+    "model_devi_jobs": [
+        {
+            "sys_idx": [0, 1, 2, 3, 4],
+            "temps": [300, 380, 453.15, 550],
+            "press": [1.0, 50.0],
+            "trj_freq": 10,
+            "nsteps": 2000,
+            "ensemble": "nvt",
+            "_idx": "00"
+        },
+        {
+            "sys_idx": [5, 6, 7, 8, 9],
+            "temps": [300, 380, 453.15, 550],
+            "press": [1.0, 50.0, 200.0],
+            "trj_freq": 10,
+            "nsteps": 4000,
+            "ensemble": "nvt",
+            "_idx": "01"
+        }
+    ],
+    "fp_style": "cp2k",
+    "fp_task_max": 50,
+    "fp_task_min": 5,
+    "fp_params": {
+        "dft_type": "Quickstep",
+        "user_input": {
+            "GLOBAL": {
+                "PROJECT": "DPGEN_FP",
+                "RUN_TYPE": "ENERGY_FORCE",
+                "PRINT_LEVEL": "LOW"
+            },
+            "FORCE_EVAL": {
+                "METHOD": "QUICKSTEP",
+                "DFT": {
+                    "BASIS_SET_FILE_NAME": "BASIS_MOLOPT_UZH",
+                    "POTENTIAL_FILE_NAME": "POTENTIAL_UZH",
+                    "CHARGE": 0,
+                    "MULTIPLICITY": 1,
+                    "MGRID": {
+                        "CUTOFF": 420,
+                        "NGRIDS": 5,
+                        "REL_CUTOFF": 60
+                    },
+                    "QS": {
+                        "METHOD": "GPW",
+                        "EPS_DEFAULT": 1.0e-12
+                    },
+                    "POISSON": {
+                        "PERIODIC": "XY",
+                        "POISSON_SOLVER": "MT",
+                        "MT": {
+                            "REL_CUTOFF": 2.0
+                        }
+                    },
+                    "SCF": {
+                        "SCF_GUESS": "ATOMIC",
+                        "EPS_SCF": 1.5e-6,
+                        "MAX_SCF": 200,
+                        "OT": {
+                            "MINIMIZER": "DIIS",
+                            "PRECONDITIONER": "FULL_SINGLE_INVERSE",
+                            "ENERGY_GAP": 0.001
+                        }
+                    },
+                    "XC": {
+                        "XC_FUNCTIONAL": {
+                            "_": "NO_SHORTCUT",
+                            "MGGA_X_R2SCAN": {},
+                            "MGGA_C_R2SCAN": {}
+                        },
+                        "VDW_POTENTIAL": {
+                            "POTENTIAL_TYPE": "PAIR_POTENTIAL",
+                            "PAIR_POTENTIAL": {
+                                "TYPE": "DFTD4",
+                                "PARAMETER_FILE_NAME": "dftd4.dat",
+                                "REFERENCE_FUNCTIONAL": "r2SCAN",
+                                "R_CUTOFF": 15.0
+                            }
+                        }
+                    }
+                },
+                "SUBSYS": {
+                    "CELL": {
+                        "PERIODIC": "XY"
+                    },
+                    "KIND": {
+                        "Ca": {"BASIS_SET": "DZVP-MOLOPT-SCAN-GTH-q10", "POTENTIAL": "GTH-SCAN-q10"},
+                        "O": {"BASIS_SET": "DZVP-MOLOPT-SCAN-GTH-q6", "POTENTIAL": "GTH-SCAN-q6"},
+                        "S": {"BASIS_SET": "DZVP-MOLOPT-SCAN-GTH-q6", "POTENTIAL": "GTH-SCAN-q6"},
+                        "H": {"BASIS_SET": "TZV2P-MOLOPT-SCAN-GTH-q1", "POTENTIAL": "GTH-SCAN-q1"},
+                        "N": {"BASIS_SET": "DZVP-MOLOPT-SCAN-GTH-q5", "POTENTIAL": "GTH-SCAN-q5"},
+                        "P": {"BASIS_SET": "DZVP-MOLOPT-SCAN-GTH-q5", "POTENTIAL": "GTH-SCAN-q5"}
+                    }
+                }
+            }
+        }
+    }
+}

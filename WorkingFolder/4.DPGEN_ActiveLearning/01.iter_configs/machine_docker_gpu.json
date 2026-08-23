@@ -1,0 +1,43 @@
+{
+    "api_version": "1.0",
+    "deepmd_version": "3.2.0",
+    "train": [
+        {
+            "command": "docker compose -f ../../../docker-compose.yml run --rm deepmd dp",
+            "machine": {
+                "batch_type": "Shell",
+                "context_type": "local",
+                "local_root": "./"
+            },
+            "resources": {
+                "group_size": 1
+            }
+        }
+    ],
+    "model_devi": [
+        {
+            "command": "docker compose -f ../../../docker-compose.yml run --rm lammps lmp",
+            "machine": {
+                "batch_type": "Shell",
+                "context_type": "local",
+                "local_root": "./"
+            },
+            "resources": {
+                "group_size": 1
+            }
+        }
+    ],
+    "fp": [
+        {
+            "command": "docker compose -f ../../../docker-compose.yml run --rm cp2k cp2k.psmp",
+            "machine": {
+                "batch_type": "Shell",
+                "context_type": "local",
+                "local_root": "./"
+            },
+            "resources": {
+                "group_size": 5
+            }
+        }
+    ]
+}
