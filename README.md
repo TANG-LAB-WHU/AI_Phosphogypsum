@@ -1,179 +1,189 @@
 # AI_Phosphogypsum
 
-AI-empowering upcycling of world-issue phosphogypsum (PG) through computational chemistry and machine learning interatomic potentials.
+**AI-empowering upcycling of world-issue phosphogypsum (PG) through multiscale quantum chemistry, active learning (DP-GEN), deep potential neural networks (DeePMD-kit), and large-scale hydrothermal molecular dynamics (LAMMPS).**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Overvie
+---
 
-This repository contains computational workflows for studying the dehydration mechanisms and surface chemistry of phosphogypsum (calcium sulfate hydrates, CaSO₄·nH₂O) using:
+## Multiscale Scientific Mission
 
-- **Machine Learning Interatomic Potentials (MACE-MP)**: Fast and accurate geometry optimization and molecular dynamics
-- **Density Functional Theory (CP2K r²SCAN)**: High-accuracy reference calculations for validation
-- **AIMD Simulations**: Ab-initio molecular dynamics for reaction mechanism investigation
+This repository establishes a closed-loop, multiscale computational framework to uncover the quantum-mechanical and transport mechanisms of **sub-nanometer confined water-mediated ammonium cation ($NH_4^+$) driving the depolymerization of phosphogypsum ($CaSO_4 \cdot nH_2O$) and directional polymerization/precipitation into hydroxyapatite ($Ca_5(PO_4)_3(OH)$) and ammonium sulfate ($(NH_4)_2SO_4$)** under experimentally verified hydrothermal conditions (**180 °C / 453.15 K, 50 bar**).
 
-The project aims to understand fundamental processes involved in PG upcycling, including:
-- Dehydration pathways from gypsum (CaSO₄·2H₂O) to anhydrite (CaSO₄)
-- Surface interactions with NH₃/NH₄⁺/HPO₄²⁻ species
-- Hydrogen bonding dynamics during phase transitions
+---
+
+## Hybrid Computing Architecture (WHU-HPC + RTX 5090 WSL2)
+
+```mermaid
+flowchart LR
+    subgraph WHU_HPC["Phase I: Wuhan University (WHU) HPC Cluster"]
+        direction TB
+        H1["Partition 9a14a (192 Cores/Node, MPI)"]
+        H2["Stage 2: 2.CP2K_GeoOpt<br>(10 Systems r2SCAN+DFTD4 Relaxation)"]
+        H3["Stage 3: 3.CP2K_AIMD<br>(10 Systems 180°C Hydrothermal Dynamics)"]
+        H1 --> H2 --> H3
+    end
+
+    subgraph Sync["High-Speed Data Sync"]
+        S["rsync Trajectories<br>(*-pos-1.xyz, *-frc-1.xyz, *-1.ener)"]
+    end
+
+    subgraph WSL2_5090["Phase II: Local Workstation (WSL2 + RTX 5090 32GB)"]
+        direction TB
+        G0["Docker Compose GPU Container Pipeline"]
+        G1["Stage 4: 4.DPGEN_ActiveLearning<br>(GPU Active Learning Exploration & Labeling)"]
+        G2["Stage 5: 5.DeePMD_MLIP<br>(RTX 5090 Ensemble Training & Tabulation Compress)"]
+        G3["Stage 6: 6.LAMMPS_ScalingUp<br>(10^5 Atoms / 100 ns Reactive Hydrothermal MD)"]
+        G0 --> G1 --> G2 --> G3
+    end
+
+    WHU_HPC -->|DFT Datasets| Sync -->|Init Seeds| WSL2_5090
+
+    style WHU_HPC fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style Sync fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style WSL2_5090 fill:#ede7f6,stroke:#512da8,stroke-width:2px
+```
+
+---
+
+## 6-Stage Multiscale Workflow Architecture
+
+```mermaid
+flowchart TD
+    S1["Stage 1: 1.ModelConfig<br>Crystallographic Slab Cleavage & Sub-nm Reactant Packing"] -->|Initial Slabs| S2["Stage 2: 2.CP2K_GeoOpt (WHU-HPC)<br>First-Principles r2SCAN+DFTD4 Ground-State Relaxation"]
+    S2 -->|Ground-State Slabs| S3["Stage 3: 3.CP2K_AIMD (WHU-HPC)<br>180°C Hydrothermal AIMD Seed Dynamics"]
+    S3 -->|Seed Dataset init_data| S4["Stage 4: 4.DPGEN_ActiveLearning (RTX 5090)<br>Explore-Select-Label Concurrent Learning Loop"]
+    S4 -->|Comprehensive Dataset dataset_all| S5["Stage 5: 5.DeePMD_MLIP (RTX 5090)<br>Production Deep Potential Training & Polynomial Compression"]
+    S5 -->|Compressed Potential model.pb| S6["Stage 6: 6.LAMMPS_ScalingUp (RTX 5090)<br>Large-Scale (100k atoms) / Long-Time (100 ns) Reactive MD"]
+
+    style S1 fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style S2 fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style S3 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style S4 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style S5 fill:#ede7f6,stroke:#512da8,stroke-width:2px
+    style S6 fill:#fbe9e7,stroke:#d84315,stroke-width:2px
+```
+
+---
 
 ## Repository Structure
 
 ```
 AI_Phosphogypsum/
-├── WorkingFolder/                      # Active computational workflows
-│   ├── 1.ModelConfig/                  # Structure preparation & model building
-│   ├── 2a.GeoOpt_Task_byMACE/          # MACE-MP geometry optimization
-│   ├── 2b.GeoOpt_Task_byCP2K_r2SCAN/   # CP2K DFT geometry optimization
-│   └── 3.MLIP_AIMD/                    # MLIP-based AIMD simulations
-├── References/                         # Reference materials
-│   ├── MACE_installation/              # MACE + cuEquivariance setup guide
-│   ├── Structural_Data/                # Crystal structure database (ICSD)
-│   ├── Papers_Parsed/                  # Parsed literature references
-│   └── Published_Articles/             # Related publications
+├── WorkingFolder/
+│   ├── 1.ModelConfig/              # Stage 1: Crystallographic slab cleavage & sub-nm reactant packing
+│   ├── 2.CP2K_GeoOpt/              # Stage 2: First-principles (r2SCAN+DFTD4) geometry optimization [WHU-HPC]
+│   ├── 3.CP2K_AIMD/                # Stage 3: Hydrothermal (180 °C) AIMD dynamics & seed sampling [WHU-HPC]
+│   ├── 4.DPGEN_ActiveLearning/     # Stage 4: DP-GEN active learning exploration & CP2K labeling [RTX 5090 WSL2]
+│   ├── 5.DeePMD_MLIP/              # Stage 5: Production Deep Potential training & dp compress [RTX 5090 WSL2]
+│   ├── 6.LAMMPS_ScalingUp/         # Stage 6: Large-scale (10^5 atoms, 100 ns) hydrothermal reactive MD [RTX 5090 WSL2]
+│   ├── docker-compose.yml          # Containerized GPU runner service definitions (DeePMD, LAMMPS, CP2K)
+│   ├── .env                        # Environment configurations for RTX 5090 container runtime (16GB SHM)
+│   └── run_rtx5090_workflow.sh     # Master automated pipeline runner for Stages 4 -> 5 -> 6
+├── References/                     # Reference literature, structural databases & documentation
 ├── LICENSE
 └── README.md
 ```
 
-## Workflow Modules
+---
 
-### 1. Model Configuration (`WorkingFolder/1.ModelConfig/`)
+## 10 Standard Computational Systems
 
-Tools for generating slab models from crystallographic data:
+| System ID | Composition | Atoms | Description |
+| :--- | :--- | :---: | :--- |
+| **`2.1.1 / 3.1.1`** | $CaSO_4 \cdot 2H_2O$ | 192 | Gypsum dihydrate (020) surface slab |
+| **`2.1.2 / 3.1.2`** | $CaSO_4 \cdot 0.583H_2O$ | 384 | Bassanite hemihydrate sub-phase variant |
+| **`2.1.2 / 3.1.2`** | $CaSO_4 \cdot 0.5H_2O$ | 180 | Bassanite stoichiometric hemihydrate |
+| **`2.1.2 / 3.1.2`** | $CaSO_4 \cdot 0.625H_2O$ | 360 | Intermediate hydrate state |
+| **`2.1.3 / 3.1.3`** | $CaSO_4$ | 96 | Anhydrite complete dehydration phase |
+| **`2.2.1 / 3.2.1`** | $CaSO_4 \cdot 2H_2O + \text{Reactants}$ | 296 | Dihydrate + confined $NH_4^+ / HPO_4^{2-} / NH_3 / H_2O$ |
+| **`2.2.2 / 3.2.2`** | $CaSO_4 \cdot 0.583H_2O + \text{Reactants}$ | 488 | Hemihydrate 0.583 + confined reactants |
+| **`2.2.2 / 3.2.2`** | $CaSO_4 \cdot 0.5H_2O + \text{Reactants}$ | 284 | Hemihydrate 0.500 + confined reactants |
+| **`2.2.2 / 3.2.2`** | $CaSO_4 \cdot 0.625H_2O + \text{Reactants}$ | 464 | Intermediate 0.625 + confined reactants |
+| **`2.2.3 / 3.2.3`** | $CaSO_4 + \text{Reactants}$ | 200 | Anhydrite + confined reactants |
 
-| Script | Function |
-|--------|----------|
-| `create_slab_from_cif.py` | Create surface slabs from CIF files with specified Miller indices |
-| `NH4_packing_CSOslab.py` | Pack reactant molecules (H₂O, NH₃, NH₄⁺, HPO₄²⁻) into vacuum region |
-| `generate_dehydration_series.py` | Generate CaSO₄·nH₂O structures with varying water content (n = 2 → 0) |
+---
 
-**Supported Systems:**
-- Pure CSO slabs: CaSO₄·2H₂O, CaSO₄·0.625H₂O, CaSO₄·0.583H₂O, CaSO₄·0.5H₂O, CaSO₄
-- CSO + Reactants: All above with NH₃/NH₄⁺/HPO₄²⁻ adsorption
+## Detailed Hardware Execution Guide
 
-### 2a. MACE-MP Geometry Optimization (`WorkingFolder/2a.GeoOpt_Task_byMACE/`)
-
-Fast geometry optimization using pre-trained universal machine learning potentials.
-
-**Features:**
-- GPU-accelerated calculations with CUDA support
-- DFT-D3 dispersion correction (Becke-Johnson damping)
-- Multiple pre-trained models: `mace-matpes-r2scan-0`, `mace-matpes-pbe-0`, `medium-mpa-0`
-- Typical performance: ~90 ms/step on RTX 5080
-
-**Quick Start:**
-```bash
-conda activate mace_env
-cd WorkingFolder/2a.GeoOpt_Task_byMACE/2.1.1CSO-2H2O
-python run_mace_GeoOpt.py --model mace-matpes-r2scan-0 --fmax 0.00001
-```
-
-### 2b. CP2K DFT Geometry Optimization (`WorkingFolder/2b.GeoOpt_Task_byCP2K_r2SCAN/`)
-
-High-accuracy DFT calculations using the r²SCAN functional with D4 dispersion correction.
-
-**Features:**
-- revPBE + DFT-D4 dispersion correction
-- MOLOPT basis sets + GTH pseudopotentials
-- Docker-based execution with GPU support
-
-**Quick Start:**
-```bash
-cd WorkingFolder/2b.GeoOpt_Task_byCP2K_r2SCAN/2.1.1CSO-2H2O
-.\run_cp2k_geoopt.bat
-```
-
-### 3. MLIP-AIMD Simulations (`WorkingFolder/3.MLIP_AIMD/`)
-
-Machine-learning potential driven ab-initio molecular dynamics for investigating reaction mechanisms and dynamics.
-
-## Installation
-
-### Prerequisites
-
-- Python 3.10+
-- NVIDIA GPU with CUDA 12.x support
-- Conda or venv for environment management
-
-### MACE Environment Setup
+### 1. Phase I: First-Principles Quantum Chemistry on WHU-HPC Cluster
+- **Host**: Wuhan University (WHU) High-Performance Computing Center
+- **Partition & Account**: `9a14a` / `tangsiqi` (192 MPI Ranks per Node)
+- **CP2K Version**: CP2K v2026.2 (`source /scratch/tangsiqi/CP2K_pkg/cp2k-v202602/install/bin/cp2k_env.sh`)
+- **Key Parameters**:
+  - Exchange-Correlation: Meta-GGA `r2SCAN` + `DFTD4` (`D4_CUTOFF [angstrom] 25.0`, `R_CUTOFF [angstrom] 15.0`)
+  - Electrostatic Boundary: 2D Decoupled `PERIODIC XY` + `PSOLVER MT` (`REL_CUTOFF 2.0`)
+  - FFT Solver: `EXTENDED_FFT_LENGTHS TRUE` (FFTW3 dynamic factor library supporting 4096+ points)
+  - Orbital Transformation: `PRECONDITIONER FULL_ALL`, `MINIMIZER CG` + `LINESEARCH 2PNT`, `ENERGY_GAP 0.001`
+  - Wavefunction Extrapolation: `EXTRAPOLATION ASPC (Order 4)`
 
 ```bash
-# Create conda environment
-conda create -n mace_env python=3.10 -y
-conda activate mace_env
+# 1. Submit all 10 geometry optimization jobs
+cd WorkingFolder/2.CP2K_GeoOpt
+./submit_all_jobs.sh
 
-# Install PyTorch with CUDA support
-pip install torch --index-url https://download.pytorch.org/whl/cu129
+# 2. Submit all 10 hydrothermal (180 °C) AIMD simulation jobs
+cd WorkingFolder/3.CP2K_AIMD
+./submit_all_jobs.sh
 
-# Install MACE and dependencies
-pip install mace-torch ase matplotlib numpy
-
-# (Optional) Install cuEquivariance for GPU acceleration
-pip install cuequivariance==0.8.1 cuequivariance-torch==0.8.1
-pip install cuequivariance-ops-cu12==0.8.1 cuequivariance-ops-torch-cu12==0.8.1
+# 3. Monitor running jobs
+squeue -u tangsiqi
 ```
 
-For detailed installation instructions including Blackwell architecture GPU (RTX 5080/5090) support, see [`References/MACE_installation/MACE_installation.md`](References/MACE_installation/MACE_installation.md).
+---
 
-### CP2K Environment Setup
+### 2. High-Speed Data Sync (WHU-HPC $\rightarrow$ Local RTX 5090 WSL2)
+Once AIMD trajectories are generated on WHU-HPC, synchronize the dataset back to the local workstation:
 
 ```bash
-# Create conda environment
-conda create -n AI_Phosphogypsum python=3.10 -y
-conda activate AI_Phosphogypsum
-pip install ase matplotlib numpy
+# Run in local WSL2 terminal:
+rsync -avzP \
+  --include="*/" \
+  --include="*-pos-1.xyz" \
+  --include="*-frc-1.xyz" \
+  --include="*-1.ener" \
+  --include="*-1.cell" \
+  --exclude="*" \
+  tangsiqi@hpc.whu.edu.cn:/scratch/tangsiqi/AI_Phosphogypsum/WorkingFolder/3.CP2K_AIMD/ \
+  WorkingFolder/3.CP2K_AIMD/
 ```
 
-CP2K runs via Docker. Ensure Docker Desktop is installed and GPU passthrough is configured.
+---
 
-## Usage Examples
+### 3. Phase II: Deep Potential MLIP & LAMMPS on Local RTX 5090 (WSL2)
+- **Host**: Windows 11 WSL2 (Ubuntu 24.04) + **NVIDIA GeForce RTX 5090 (32GB GDDR7, Blackwell Architecture)**
+- **Runtime**: Industrial Docker Compose GPU containerization (`ghcr.io/deepmodeling/deepmd-kit:3.2.0_cuda129` + local GPU CP2K container)
 
-### Generate a Gypsum Slab
-
+#### One-Click Automated Master Execution
 ```bash
-cd WorkingFolder/1.ModelConfig
-python create_slab_from_cif.py \
-    --cif-input 1.1.1CSO-2H2O/conventional_cell.cif \
-    --miller 0 2 0 \
-    --layers 1 \
-    --vacuum 15.0 \
-    --supercell 2 2
+cd WorkingFolder
+
+# Execute the complete Stage 4 -> 5 -> 6 pipeline via GPU containerization
+./run_rtx5090_workflow.sh --step all --mode docker
 ```
 
-### Pack Reactants onto Slab
+#### Individual Stage Execution Options
+- **Stage 4: Active Learning Iteration**:
+  ```bash
+  ./run_rtx5090_workflow.sh --step 4 --mode docker
+  ```
+- **Stage 5: Ensemble Training & Tabulation Compression**:
+  ```bash
+  ./run_rtx5090_workflow.sh --step 5 --mode docker
+  ```
+- **Stage 6: 100k-Atom Reactive MD & Kinetics Analysis**:
+  ```bash
+  ./run_rtx5090_workflow.sh --step 6 --mode docker
+  ```
 
-```bash
-python NH4_packing_CSOslab.py \
-    --slab-input 1.1.1CSO-2H2O/conventional_cell_slab_020_L1_2x2.xyz \
-    --output-dir 1.2.1CSO-2H2O+NH4 \
-    --n-water 20 --n-nh3 3 --n-nh4 4 --n-hpo4 2 \
-    --auto-vacuum --min-distance 2.5
-```
+---
 
-### Run MACE Geometry Optimization
+## Authors & Acknowledgments
 
-```bash
-cd WorkingFolder/2a.GeoOpt_Task_byMACE/2.1.1CSO-2H2O
-python run_mace_GeoOpt.py \
-    --model mace-matpes-r2scan-0 \
-    --fmax 0.00001 \
-    --optimizer BFGS
-```
+- **Tang Lab**, Wuhan University (WHU).
+- **Core Methodology**: Meta-GGA `r2SCAN` + `DFTD4` 2D Martyna-Tuckerman DFT, DP-GEN active learning, DeePMD-kit smooth-edition SE(e2_a) descriptors, and tabulated LAMMPS reactive molecular dynamics.
 
-## System Overview
-
-| System ID | Composition | Description |
-|-----------|-------------|-------------|
-| 2.1.1 | CaSO₄·2H₂O | Gypsum (dihydrate) |
-| 2.1.2 | CaSO₄·0.5-0.625H₂O | Bassanite (hemihydrate) variants |
-| 2.1.3 | CaSO₄ | Anhydrite |
-| 2.2.x | CSO·nH₂O + NH₄/NH₃/HPO₄ | Reactant-adsorbed systems |
-
-## References
-
-- MACE: [ACEsuit/mace](https://github.com/ACEsuit/mace)
-- CP2K: [CP2K Open Source Molecular Dynamics](https://www.cp2k.org/)
-- ASE: [Atomic Simulation Environment](https://wiki.fysik.dtu.dk/ase/)
+---
 
 ## License
 
