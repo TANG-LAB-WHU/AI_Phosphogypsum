@@ -1,0 +1,309 @@
+ DBCSR| CPU Multiplication driver                                           XSMM (U)
+ DBCSR| Multrec recursion limit                                              512 (U)
+ DBCSR| Multiplication stack size                                           1000 (D)
+ DBCSR| Maximum elements for images                                    UNLIMITED (U)
+ DBCSR| Multiplicative factor virtual images                                   1 (U)
+ DBCSR| Use multiplication densification                                       T (D)
+ DBCSR| Multiplication size stacks                                             3 (U)
+ DBCSR| Use memory pool for CPU allocation                                     F (U)
+ DBCSR| Number of 3D layers                                               SINGLE (U)
+ DBCSR| Use MPI memory allocation                                              F (U)
+ DBCSR| Use RMA algorithm                                                      F (U)
+ DBCSR| Use Communication thread                                               T (U)
+ DBCSR| Communication thread load                                             87 (D)
+ DBCSR| MPI: My process id                                                     0
+ DBCSR| MPI: Number of processes                                             192
+ DBCSR| OMP: Current number of threads                                         1
+ DBCSR| OMP: Max number of threads                                             1
+ DBCSR| Split modifier for TAS multiplication algorithm                  1.0E+00 (U)
+
+
+  **** **** ******  **  PROGRAM STARTED AT               2026-08-23 23:00:33.909
+ ***** ** ***  *** **   PROGRAM STARTED ON                                 n0520
+ **    ****   ******    PROGRAM STARTED BY                              tangsiqi
+ ***** **    ** ** **   PROGRAM PROCESS ID                                160201
+  **** **  *******  **  PROGRAM STARTED IN /scratch/tangsiqi/liyi_folder/AI_phos
+                                           phogypsum/2.CP2K_GeoOpt/2.1.2CSO-0.62
+                                           5H2O
+
+ CP2K| version string:                                       CP2K version 2026.2
+ CP2K| source code revision number:                                  git:c92cc08
+ CP2K| cp2kflags: omp libint fftw3 libxc elpa parallel scalapack mpi_f08 cosma l
+ CP2K|            ibxs libxsmm plumed2 spglib libdftd4 dftd4_v4_2 s_dftd3 mctc-l
+ CP2K|            lib tblite libvori libbqb mimic hdf5 trexio libsmeagol greenx
+ CP2K| is freely available from                            https://www.cp2k.org/
+ CP2K| Program compiled at                                   2026-08-15 22:43:53
+ CP2K| Program compiled on                                                 n0529
+ CP2K| Program compiled for                                               x86_64
+ CP2K| Data directory path          /scratch/tangsiqi/CP2K_pkg/cp2k-v202602/data
+ CP2K| Input file name                                               geo_opt.inp
+
+ GLOBAL| Force Environment number                                              1
+ GLOBAL| Basis set file name                                    BASIS_MOLOPT_UZH
+ GLOBAL| Potential file name                                       POTENTIAL_UZH
+ GLOBAL| MM Potential file name                                     MM_POTENTIAL
+ GLOBAL| Coordinate file name                              2.1.2CSO-0.625H2O.xyz
+ GLOBAL| Method name                                                        CP2K
+ GLOBAL| Project name                                         gypsum_slab_geoopt
+ GLOBAL| Run type                                                        GEO_OPT
+ GLOBAL| FFT library                                                       FFTW3
+ GLOBAL| Diagonalization library                                            ELPA
+ GLOBAL| Cholesky decomposition library                                ScaLAPACK
+ GLOBAL| DGEMM library                                                      BLAS
+ GLOBAL| Minimum number of eigenvectors for ELPA usage                        64
+ GLOBAL| Orthonormality check for eigenvectors                          DISABLED
+ GLOBAL| Matrix multiplication library                                     COSMA
+ GLOBAL| All-to-all communication in single precision                          F
+ GLOBAL| FFTs using library dependent lengths                                  T
+ GLOBAL| Grid backend                                                       AUTO
+ GLOBAL| Global print level                                                  LOW
+ GLOBAL| MPI I/O enabled                                                       T
+ GLOBAL| Total number of message passing processes                           192
+ GLOBAL| Number of distributed systems (nodes)                                 1
+ GLOBAL| Number of threads for this process                                    1
+ GLOBAL| This output is from process                                           0
+ GLOBAL| OpenMP stack size per thread (OMP_STACKSIZE)                       128M
+ GLOBAL| CPU model name                          AMD EPYC 9A14 96-Core Processor
+ GLOBAL| CPUID                                                              1003
+
+ MEMORY| system memory details [Kb]
+ MEMORY|                        rank 0           min           max       average
+ MEMORY| MemTotal            791724184     791724184     791724184     791724184
+ MEMORY| MemFree             753022096     753004456     753023128     753021185
+ MEMORY| Buffers                 96976         96976         96976         96976
+ MEMORY| Cached                1808076       1808076       1808076       1808076
+ MEMORY| Slab                  1304576       1304468       1304580       1304571
+ MEMORY| SReclaimable           335380        335380        335380        335380
+ MEMORY| MemLikelyFree       755262528     755244888     755263560     755261617
+
+
+ GENERATE|  Preliminary Number of Bonds generated:                             0
+ GENERATE|  Achieved consistency in connectivity generation.
+
+ *******************************************************************************
+ *******************************************************************************
+ **                                                                           **
+ **     #####                         ##              ##                      **
+ **    ##   ##            ##          ##              ##                      **
+ **   ##     ##                       ##            ######                    **
+ **   ##     ##  ##   ##  ##   #####  ##  ##   ####   ##    #####    #####    **
+ **   ##     ##  ##   ##  ##  ##      ## ##   ##      ##   ##   ##  ##   ##   **
+ **   ##  ## ##  ##   ##  ##  ##      ####     ###    ##   ######   ######    **
+ **    ##  ###   ##   ##  ##  ##      ## ##      ##   ##   ##       ##        **
+ **     #######   #####   ##   #####  ##  ##  ####    ##    #####   ##        **
+ **           ##                                                    ##        **
+ **                                                                           **
+ **                                                ... make the atoms dance   **
+ **                                                                           **
+ **            Copyright (C) by CP2K developers group (2000-2026)             **
+ **                      J. Chem. Phys. 152, 194103 (2020)                    **
+ **                                                                           **
+ *******************************************************************************
+
+
+ TOTAL NUMBERS AND MAXIMUM NUMBERS
+
+  Total number of            - Atomic kinds:                                   4
+                             - Atoms:                                        360
+                             - Shell sets:                                   360
+                             - Shells:                                      1896
+                             - Primitive Cartesian functions:               1800
+                             - Cartesian basis functions:                   5136
+                             - Spherical basis functions:                   4776
+
+  Maximum angular momentum of- Orbital basis functions:                        2
+                             - Local part of the GTH pseudopotential:          2
+                             - Non-local part of the GTH pseudopotential:      3
+
+
+ SCF PARAMETERS         Density guess:                                    ATOMIC
+                        --------------------------------------------------------
+                        max_scf:                                             200
+                        max_scf_history:                                       0
+                        max_diis:                                              4
+                        --------------------------------------------------------
+                        eps_scf:                                        1.50E-06
+                        eps_scf_history:                                0.00E+00
+                        eps_diis:                                       0.00E+00
+                        eps_eigval:                                     1.00E-05
+                        --------------------------------------------------------
+                        level_shift [a.u.]:                             0.000000
+                        --------------------------------------------------------
+                        Outer loop SCF in use 
+                        No variables optimised in outer loop
+                        eps_scf                                         1.50E-06
+                        max_scf                                               30
+                        No outer loop optimization
+                        step_size                                       5.00E-01
+
+ BFGS| Use rational function optimization for step estimation:                NO
+ BFGS| Use model Hessian for initial guess:                                  YES
+ BFGS| Restart Hessian:                                                       NO
+ BFGS| Trust radius:                                                       0.378
+
+ *******************************************************************************
+ ***                     STARTING GEOMETRY OPTIMIZATION                      ***
+ ***                                   BFGS                                  ***
+ *******************************************************************************
+
+ Extrapolation method: initial_guess
+
+ Number of electrons:                                                       2112
+ Number of occupied orbitals:                                               1056
+ Number of molecular orbitals:                                              1056
+
+ Number of orbital functions:                                               4776
+ Number of independent orbital functions:                                   4776
+
+
+ SCF WAVEFUNCTION OPTIMIZATION
+
+  ----------------------------------- OT ---------------------------------------
+  Minimizer      : CG                  : conjugate gradient
+  Preconditioner : FULL_ALL            : diagonalization, state selective
+  Precond_solver : DEFAULT
+  Line search    : 2PNT                : 2 energies, one gradient
+  stepsize       :    0.15000000                  energy_gap     :    0.00100000
+  eps_taylor     :   0.10000E-15                  max_taylor     :             4
+  ----------------------------------- OT ---------------------------------------
+
+  Step     Update method      Time    Convergence         Total energy    Change
+  ------------------------------------------------------------------------------
+     1 OT CG       0.15E+00   28.6     0.02382985     -5536.6807917024 -5.54E+03
+     - OT LS       0.82E-01    2.2                    -5571.6750285764
+     2 OT CG       0.82E-01    3.7     0.04639331     -5606.6901045613 -7.00E+01
+     - OT LS       0.29E-01    1.9                    -5332.0257590744
+     3 OT CG       0.29E-01    3.6     0.02785792     -5547.5437099876  5.91E+01
+     - OT LS       0.11E-01    1.8                    -5531.0507790506
+     4 OT CG       0.11E-01    3.5     0.02073526     -5555.0281659246 -7.48E+00
+     - OT LS       0.42E-01    1.8                    -5576.8724140649
+     5 OT CG       0.42E-01    3.5     0.01585986     -5627.2436516524 -7.22E+01
+     - OT LS       0.73E-01    1.8                    -5666.6122406505
+     6 OT CG       0.73E-01    3.4     0.01598171     -5676.4506719086 -4.92E+01
+     - OT LS       0.27E-01    1.8                    -5642.8192607449
+     7 OT CG       0.27E-01    3.4     0.01194453     -5691.8782265609 -1.54E+01
+     - OT LS       0.48E-01    1.8                    -5702.9648297611
+     8 OT CG       0.48E-01    3.3     0.00944332     -5704.4889027673 -1.26E+01
+     - OT LS       0.59E-01    1.8                    -5716.6705346479
+     9 OT CG       0.59E-01    3.3     0.00658386     -5717.1575482213 -1.27E+01
+     - OT LS       0.44E-01    1.8                    -5721.3235807456
+    10 OT CG       0.44E-01    4.9     0.00443924     -5721.8872323578 -4.73E+00
+     - OT LS       0.62E-01    1.7                    -5724.7012952262
+    11 OT CG       0.62E-01    3.5     0.00277795     -5724.9371102704 -3.05E+00
+     - OT LS       0.74E-01    1.8                    -5726.3025315754
+    12 OT CG       0.74E-01    3.3     0.00202144     -5726.3350288434 -1.40E+00
+     - OT LS       0.74E-01    1.7                    -5727.0871092759
+    13 OT CG       0.74E-01    3.3     0.00167175     -5727.0871227868 -7.52E-01
+     - OT LS       0.71E-01    1.7                    -5727.5879044625
+    14 OT CG       0.71E-01    3.3     0.00133203     -5727.5886300889 -5.02E-01
+     - OT LS       0.90E-01    1.7                    -5727.9745727105
+    15 OT CG       0.90E-01    3.3     0.00109236     -5727.9932367627 -4.05E-01
+     - OT LS       0.95E-01    1.7                    -5728.2792017864
+    16 OT CG       0.95E-01    3.3     0.00101124     -5728.2798104038 -2.87E-01
+     - OT LS       0.84E-01    1.7                    -5728.4926147979
+    17 OT CG       0.84E-01    3.2     0.00089016     -5728.4957892965 -2.16E-01
+     - OT LS       0.99E-01    1.7                    -5728.6904287605
+    18 OT CG       0.99E-01    3.2     0.00080426     -5728.6950156771 -1.99E-01
+     - OT LS       0.11E+00    1.7                    -5728.8687383059
+    19 OT CG       0.11E+00    3.2     0.00078231     -5728.8698699877 -1.75E-01
+     - OT LS       0.97E-01    1.7                    -5729.0180543426
+    20 OT CG       0.97E-01    3.2     0.00074175     -5729.0198821809 -1.50E-01
+     - OT LS       0.96E-01    1.7                    -5729.1533390132
+    21 OT CG       0.96E-01    3.3     0.00066849     -5729.1533389784 -1.33E-01
+     - OT LS       0.11E+00    1.7                    -5729.2717753126
+    22 OT CG       0.11E+00    3.2     0.00062053     -5729.2727919786 -1.19E-01
+     - OT LS       0.10E+00    1.7                    -5729.3737489824
+    23 OT CG       0.10E+00    3.2     0.00057490     -5729.3737831636 -1.01E-01
+     - OT LS       0.10E+00    1.7                    -5729.4575466513
+    24 OT CG       0.10E+00    3.2     0.00053602     -5729.4576277386 -8.38E-02
+     - OT LS       0.10E+00    1.7                    -5729.5299927625
+    25 OT CG       0.10E+00    3.2     0.00049670     -5729.5299960306 -7.24E-02
+     - OT LS       0.10E+00    1.7                    -5729.5927151333
+    26 OT CG       0.10E+00    3.2     0.00044935     -5729.5927251913 -6.27E-02
+     - OT LS       0.11E+00    1.7                    -5729.6484669479
+    27 OT CG       0.11E+00    3.2     0.00042164     -5729.6488633781 -5.61E-02
+     - OT LS       0.11E+00    1.7                    -5729.6982118704
+    28 OT CG       0.11E+00    3.2     0.00040577     -5729.6982121810 -4.93E-02
+     - OT LS       0.10E+00    1.7                    -5729.7402835929
+    29 OT CG       0.10E+00    3.2     0.00038841     -5729.7405497539 -4.23E-02
+     - OT LS       0.11E+00    1.7                    -5729.7804913173
+    30 OT CG       0.11E+00    3.2     0.00036283     -5729.7805308780 -4.00E-02
+     - OT LS       0.11E+00    1.7                    -5729.8176633125
+    31 OT CG       0.11E+00    3.2     0.00034378     -5729.8178030832 -3.73E-02
+     - OT LS       0.11E+00    1.7                    -5729.8512364971
+    32 OT CG       0.11E+00    3.2     0.00033234     -5729.8512375645 -3.34E-02
+     - OT LS       0.11E+00    1.7                    -5729.8810028423
+    33 OT CG       0.11E+00    3.2     0.00031661     -5729.8810862313 -2.98E-02
+     - OT LS       0.11E+00    1.7                    -5729.9078270273
+    34 OT CG       0.11E+00    3.2     0.00029977     -5729.9078282570 -2.67E-02
+     - OT LS       0.11E+00    1.7                    -5729.9333439854
+    35 OT CG       0.11E+00    3.2     0.00028437     -5729.9334427693 -2.56E-02
+     - OT LS       0.11E+00    1.7                    -5729.9565882549
+    36 OT CG       0.11E+00    3.2     0.00027312     -5729.9565899774 -2.31E-02
+     - OT LS       0.11E+00    1.7                    -5729.9781683895
+    37 OT CG       0.11E+00    3.2     0.00026552     -5729.9781700526 -2.16E-02
+     - OT LS       0.11E+00    1.7                    -5729.9982860031
+    38 OT CG       0.11E+00    3.2     0.00025977     -5729.9982883028 -2.01E-02
+     - OT LS       0.11E+00    1.7                    -5730.0173347664
+    39 OT CG       0.11E+00    3.2     0.00025496     -5730.0173380967 -1.90E-02
+     - OT LS       0.11E+00    1.7                    -5730.0359120061
+    40 OT CG       0.11E+00    3.2     0.00024677     -5730.0359195965 -1.86E-02
+     - OT LS       0.12E+00    1.7                    -5730.0541159687
+    41 OT CG       0.12E+00    3.2     0.00023731     -5730.0541418033 -1.82E-02
+     - OT LS       0.12E+00    1.7                    -5730.0714436028
+    42 OT CG       0.12E+00    3.2     0.00023650     -5730.0714605199 -1.73E-02
+     - OT LS       0.11E+00    1.7                    -5730.0874051588
+    43 OT CG       0.11E+00    3.2     0.00023056     -5730.0874919919 -1.60E-02
+     - OT LS       0.11E+00    1.7                    -5730.1022233350
+    44 OT CG       0.11E+00    3.2     0.00022390     -5730.1022353020 -1.47E-02
+     - OT LS       0.12E+00    1.7                    -5730.1168494061
+    45 OT CG       0.12E+00    3.2     0.00021434     -5730.1168812079 -1.46E-02
+     - OT LS       0.12E+00    1.7                    -5730.1310900796
+    46 OT CG       0.12E+00    3.2     0.00020898     -5730.1311472411 -1.43E-02
+     - OT LS       0.12E+00    1.7                    -5730.1446651015
+    47 OT CG       0.12E+00    3.2     0.00020653     -5730.1446654382 -1.35E-02
+     - OT LS       0.12E+00    1.7                    -5730.1569868411
+    48 OT CG       0.12E+00    3.2     0.00020517     -5730.1570360504 -1.24E-02
+     - OT LS       0.11E+00    1.7                    -5730.1690553851
+    49 OT CG       0.11E+00    3.1     0.00019937     -5730.1690596769 -1.20E-02
+     - OT LS       0.12E+00    1.7                    -5730.1810301368
+    50 OT CG       0.12E+00    3.2     0.00019199     -5730.1810709894 -1.20E-02
+     - OT LS       0.12E+00    1.7                    -5730.1925967535
+    51 OT CG       0.12E+00    3.2     0.00018826     -5730.1926094495 -1.15E-02
+     - OT LS       0.12E+00    1.7                    -5730.2034856159
+    52 OT CG       0.12E+00    3.2     0.00018756     -5730.2034884949 -1.09E-02
+     - OT LS       0.12E+00    1.7                    -5730.2137544819
+    53 OT CG       0.12E+00    3.2     0.00018266     -5730.2137806429 -1.03E-02
+     - OT LS       0.12E+00    1.7                    -5730.2237501622
+    54 OT CG       0.12E+00    3.2     0.00017855     -5730.2237561933 -9.98E-03
+     - OT LS       0.12E+00    1.7                    -5730.2334145060
+    55 OT CG       0.12E+00    3.2     0.00017326     -5730.2334155533 -9.66E-03
+     - OT LS       0.12E+00    1.7                    -5730.2426775164
+    56 OT CG       0.12E+00    3.2     0.00017044     -5730.2426829649 -9.27E-03
+     - OT LS       0.12E+00    1.7                    -5730.2514820892
+    57 OT CG       0.12E+00    3.2     0.00016555     -5730.2514865341 -8.80E-03
+     - OT LS       0.12E+00    1.7                    -5730.2597372271
+    58 OT CG       0.12E+00    3.2     0.00016272     -5730.2597373213 -8.25E-03
+     - OT LS       0.12E+00    1.7                    -5730.2677094871
+    59 OT CG       0.12E+00    3.2     0.00015740     -5730.2677094722 -7.97E-03
+     - OT LS       0.12E+00    1.7                    -5730.2753723464
+    60 OT CG       0.12E+00    3.2     0.00015253     -5730.2753807200 -7.67E-03
+     - OT LS       0.12E+00    1.7                    -5730.2826323049
+    61 OT CG       0.12E+00    3.2     0.00015062     -5730.2826323277 -7.25E-03
+     - OT LS       0.12E+00    1.7                    -5730.2894683277
+    62 OT CG       0.12E+00    3.2     0.00014865     -5730.2894746252 -6.84E-03
+     - OT LS       0.12E+00    1.7                    -5730.2961013934
+    63 OT CG       0.12E+00    3.2     0.00014422     -5730.2961017093 -6.63E-03
+     - OT LS       0.12E+00    1.7                    -5730.3026200251
+    64 OT CG       0.12E+00    3.2     0.00014037     -5730.3026361169 -6.53E-03
+     - OT LS       0.13E+00    1.7                    -5730.3088804339
+    65 OT CG       0.13E+00    3.1     0.00013800     -5730.3088805584 -6.24E-03
+     - OT LS       0.12E+00    1.7                    -5730.3148483543
+    66 OT CG       0.12E+00    3.2     0.00013632     -5730.3148487663 -5.97E-03
+     - OT LS       0.12E+00    1.7                    -5730.3204353416
+    67 OT CG       0.12E+00    3.1     0.00013273     -5730.3204452460 -5.60E-03
+     - OT LS       0.12E+00    1.7                    -5730.3258081610
+    68 OT CG       0.12E+00    3.1     0.00012983     -5730.3258091355 -5.36E-03
+     - OT LS       0.12E+00    1.7                    -5730.3310121400
+    69 OT CG       0.12E+00    3.2     0.00012709     -5730.3310128317 -5.20E-03
+     - OT LS       0.12E+00    1.7                    -5730.3360552434

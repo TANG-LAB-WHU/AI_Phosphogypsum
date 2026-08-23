@@ -12,10 +12,6 @@ optimization_trajectory.xyz
 *.bak
 *.bak-*
 *.tmp
-*.out
-*.error
-*.log
-slurm-*
 
 # Python artifacts
 **/__pycache__/
