@@ -8,7 +8,7 @@
 
 ## Multiscale Scientific Mission
 
-This repository establishes a closed-loop, multiscale computational framework to uncover the quantum-mechanical and transport mechanisms of **sub-nanometer confined water-mediated ammonium cation ($NH_4^+$) driving the depolymerization of phosphogypsum ($CaSO_4 \cdot nH_2O$) and directional polymerization/precipitation into hydroxyapatite ($Ca_5(PO_4)_3(OH)$) and ammonium sulfate ($(NH_4)_2SO_4$)** under experimentally verified hydrothermal conditions (**180 °C / 453.15 K, 50 bar**).
+This repository establishes a closed-loop, multiscale computational framework to uncover the quantum-mechanical and transport mechanisms of **sub-nanometer confined water-mediated ammonium cation (NH₄⁺) driving the depolymerization of phosphogypsum (CaSO₄·nH₂O) and directional polymerization/precipitation into hydroxyapatite (Ca₅(PO₄)₃(OH)) and ammonium sulfate ((NH₄)₂SO₄)** under experimentally verified hydrothermal conditions (**180 °C / 453.15 K, 50 bar**).
 
 ---
 
@@ -91,16 +91,16 @@ AI_Phosphogypsum/
 
 | System ID | Composition | Atoms | Description |
 | :--- | :--- | :---: | :--- |
-| **`2.1.1 / 3.1.1`** | $CaSO_4 \cdot 2H_2O$ | 192 | Gypsum dihydrate (020) surface slab |
-| **`2.1.2 / 3.1.2`** | $CaSO_4 \cdot 0.583H_2O$ | 384 | Bassanite hemihydrate sub-phase variant |
-| **`2.1.2 / 3.1.2`** | $CaSO_4 \cdot 0.5H_2O$ | 180 | Bassanite stoichiometric hemihydrate |
-| **`2.1.2 / 3.1.2`** | $CaSO_4 \cdot 0.625H_2O$ | 360 | Intermediate hydrate state |
-| **`2.1.3 / 3.1.3`** | $CaSO_4$ | 96 | Anhydrite complete dehydration phase |
-| **`2.2.1 / 3.2.1`** | $CaSO_4 \cdot 2H_2O + \text{Reactants}$ | 296 | Dihydrate + confined $NH_4^+ / HPO_4^{2-} / NH_3 / H_2O$ |
-| **`2.2.2 / 3.2.2`** | $CaSO_4 \cdot 0.583H_2O + \text{Reactants}$ | 488 | Hemihydrate 0.583 + confined reactants |
-| **`2.2.2 / 3.2.2`** | $CaSO_4 \cdot 0.5H_2O + \text{Reactants}$ | 284 | Hemihydrate 0.500 + confined reactants |
-| **`2.2.2 / 3.2.2`** | $CaSO_4 \cdot 0.625H_2O + \text{Reactants}$ | 464 | Intermediate 0.625 + confined reactants |
-| **`2.2.3 / 3.2.3`** | $CaSO_4 + \text{Reactants}$ | 200 | Anhydrite + confined reactants |
+| **`2.1.1 / 3.1.1`** | CaSO₄·2H₂O | 192 | Gypsum dihydrate (020) surface slab |
+| **`2.1.2 / 3.1.2`** | CaSO₄·0.583H₂O | 384 | Bassanite hemihydrate sub-phase variant |
+| **`2.1.2 / 3.1.2`** | CaSO₄·0.5H₂O | 180 | Bassanite stoichiometric hemihydrate |
+| **`2.1.2 / 3.1.2`** | CaSO₄·0.625H₂O | 360 | Intermediate hydrate state |
+| **`2.1.3 / 3.1.3`** | CaSO₄ | 96 | Anhydrite complete dehydration phase |
+| **`2.2.1 / 3.2.1`** | CaSO₄·2H₂O + Reactants | 296 | Dihydrate + confined NH₄⁺ / HPO₄²⁻ / NH₃ / H₂O |
+| **`2.2.2 / 3.2.2`** | CaSO₄·0.583H₂O + Reactants | 488 | Hemihydrate 0.583 + confined reactants |
+| **`2.2.2 / 3.2.2`** | CaSO₄·0.5H₂O + Reactants | 284 | Hemihydrate 0.500 + confined reactants |
+| **`2.2.2 / 3.2.2`** | CaSO₄·0.625H₂O + Reactants | 464 | Intermediate 0.625 + confined reactants |
+| **`2.2.3 / 3.2.3`** | CaSO₄ + Reactants | 200 | Anhydrite + confined reactants |
 
 ---
 
@@ -132,7 +132,7 @@ squeue -u tangsiqi
 
 ---
 
-### 2. High-Speed Data Sync (WHU-HPC $\rightarrow$ Local RTX 5090 WSL2)
+### 2. High-Speed Data Sync (WHU-HPC → Local RTX 5090 WSL2)
 Once AIMD trajectories are generated on WHU-HPC, synchronize the dataset back to the local workstation:
 
 ```bash
