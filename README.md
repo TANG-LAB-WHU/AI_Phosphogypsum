@@ -2,7 +2,7 @@
 
 **AI-empowering upcycling of world-issue phosphogypsum (PG) through multiscale quantum chemistry, active learning (DP-GEN), deep potential neural networks (DeePMD-kit), and large-scale hydrothermal molecular dynamics (LAMMPS).**
 
-[![Tang Lab WHU](https://img.shields.io/badge/Tang_Lab-Wuhan_University-002147.svg)](https://www.whu.edu.cn/)
+[![Tang Lab WHU](https://img.shields.io/badge/Tang_Lab-Wuhan_University-002147.svg)](https://tang-lab-whu.github.io/tanglab.github.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Docker Compose](https://img.shields.io/badge/Deploy-Docker_GPU-2496ED.svg?logo=docker&logoColor=white)](https://www.docker.com/)
 [![CP2K](https://img.shields.io/badge/DFT-CP2K_v2026.2-4CAF50.svg)](https://www.cp2k.org/)
@@ -186,7 +186,7 @@ cd WorkingFolder
 
 ## Authors & Acknowledgments
 
-- **Tang Lab**, Wuhan University (WHU).
+- **[Tang Lab](https://tang-lab-whu.github.io/tanglab.github.io/)**, Wuhan University (WHU).
 - **Core Methodology**: Meta-GGA `r2SCAN` + `DFTD4` 2D Martyna-Tuckerman DFT, DP-GEN active learning, DeePMD-kit smooth-edition SE(e2_a) descriptors, and tabulated LAMMPS reactive molecular dynamics.
 
 ---
