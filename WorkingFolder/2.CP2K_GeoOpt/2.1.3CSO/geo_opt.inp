@@ -6,7 +6,8 @@
 &GLOBAL
   PROJECT_NAME  ${PROJECT_NAME}
   RUN_TYPE      GEO_OPT
-  PRINT_LEVEL   MEDIUM
+  PRINT_LEVEL   LOW
+  EXTENDED_FFT_LENGTHS
 &END GLOBAL
 
 &FORCE_EVAL
@@ -20,14 +21,14 @@
     &MGRID
       CUTOFF      ${CUT_OFF}
       REL_CUTOFF  60
-      NGRIDS      5
+      NGRIDS      4
     &END MGRID
 
     &QS
       METHOD           GPW
       EPS_DEFAULT      1.0E-12
       EXTRAPOLATION    ASPC
-      EXTRAPOLATION_ORDER 3
+      EXTRAPOLATION_ORDER 4
     &END QS
 
     &POISSON
@@ -43,12 +44,13 @@
       EPS_SCF      ${EPS_SCF}
       MAX_SCF      ${MAX_SCF}
       &OT
-        MINIMIZER           DIIS
-        PRECONDITIONER      FULL_SINGLE_INVERSE
+        MINIMIZER           CG
+        LINESEARCH          2PNT
+        PRECONDITIONER      FULL_ALL
         ENERGY_GAP          0.001
       &END OT
       &OUTER_SCF
-        MAX_SCF    10
+        MAX_SCF    30
         EPS_SCF    ${EPS_SCF}
       &END OUTER_SCF
       &PRINT
@@ -74,7 +76,8 @@
           TYPE                  DFTD4
           PARAMETER_FILE_NAME   dftd4.dat
           REFERENCE_FUNCTIONAL  r2SCAN
-          R_CUTOFF              15.0
+          D4_CUTOFF             [angstrom] 25.0
+          R_CUTOFF              [angstrom] 15.0
         &END PAIR_POTENTIAL
       &END VDW_POTENTIAL
     &END XC
@@ -93,15 +96,15 @@
     &END TOPOLOGY
 
     &KIND Ca
-      BASIS_SET DZVP-MOLOPT-SCAN-GTH-q10
+      BASIS_SET ORB DZVP-MOLOPT-SCAN-GTH-q10
       POTENTIAL GTH-SCAN-q10
     &END KIND
     &KIND O
-      BASIS_SET DZVP-MOLOPT-SCAN-GTH-q6
+      BASIS_SET ORB DZVP-MOLOPT-SCAN-GTH-q6
       POTENTIAL GTH-SCAN-q6
     &END KIND
     &KIND S
-      BASIS_SET DZVP-MOLOPT-SCAN-GTH-q6
+      BASIS_SET ORB DZVP-MOLOPT-SCAN-GTH-q6
       POTENTIAL GTH-SCAN-q6
     &END KIND
   &END SUBSYS
@@ -111,7 +114,7 @@
   &GEO_OPT
     TYPE        MINIMIZATION
     OPTIMIZER   BFGS
-    MAX_ITER    500
+    MAX_ITER    300
     MAX_DR      3.0E-3
     MAX_FORCE   4.5E-4
     RMS_DR      1.5E-3
