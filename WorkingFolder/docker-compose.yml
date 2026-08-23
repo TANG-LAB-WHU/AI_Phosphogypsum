@@ -1,0 +1,68 @@
+# ==============================================================================
+# Docker Compose GPU Configuration for RTX 5090 WSL2 Workstation
+# AI_Phosphogypsum Multiscale Framework
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # Service 1: DeePMD-kit GPU Training, Testing & Tabulation Compression Engine
+  # ----------------------------------------------------------------------------
+  deepmd:
+    image: ${DEEPMD_IMAGE:-ghcr.io/deepmodeling/deepmd-kit:3.2.0_cuda129}
+    container_name: phosphogypsum_deepmd_gpu
+    working_dir: /work/WorkingFolder
+    volumes:
+      - ${WORKSPACE_DIR:-..}:/work
+    shm_size: ${SHM_SIZE:-16gb}
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - CUDA_VISIBLE_DEVICES=0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  # ----------------------------------------------------------------------------
+  # Service 2: LAMMPS GPU Molecular Dynamics Exploration & Scaling-Up Simulation
+  # ----------------------------------------------------------------------------
+  lammps:
+    image: ${DEEPMD_IMAGE:-ghcr.io/deepmodeling/deepmd-kit:3.2.0_cuda129}
+    container_name: phosphogypsum_lammps_gpu
+    working_dir: /work/WorkingFolder
+    volumes:
+      - ${WORKSPACE_DIR:-..}:/work
+    shm_size: ${SHM_SIZE:-16gb}
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - CUDA_VISIBLE_DEVICES=0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  # ----------------------------------------------------------------------------
+  # Service 3: CP2K GPU First-Principles DFT Labeling Engine (RTX 5090 Accelerated)
+  # ----------------------------------------------------------------------------
+  cp2k:
+    image: ${CP2K_IMAGE:-cp2k/cp2k:v2024.1_cuda}
+    container_name: phosphogypsum_cp2k_gpu
+    working_dir: /work/WorkingFolder
+    volumes:
+      - ${WORKSPACE_DIR:-..}:/work
+    shm_size: ${SHM_SIZE:-16gb}
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - CUDA_VISIBLE_DEVICES=0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

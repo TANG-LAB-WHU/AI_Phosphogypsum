@@ -34,3 +34,6 @@ bin/
 
 # testing folder
 testing/
+
+# Documentation and helper notes
+HELP_docs/
