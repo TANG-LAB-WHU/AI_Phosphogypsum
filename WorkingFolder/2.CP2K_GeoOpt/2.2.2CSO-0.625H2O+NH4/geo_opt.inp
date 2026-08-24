@@ -1,7 +1,7 @@
 @SET PROJECT_NAME gypsum_slab_nh4_geoopt
-@SET EPS_SCF 1.5E-6
+@SET EPS_SCF 1.0E-5
 @SET CUT_OFF 420
-@SET MAX_SCF 200
+@SET MAX_SCF 60
 
 &GLOBAL
   PROJECT_NAME  ${PROJECT_NAME}
@@ -27,6 +27,7 @@
     &QS
       METHOD           GPW
       EPS_DEFAULT      1.0E-12
+      EPS_PGF_ORB      1.0E-14
       EXTRAPOLATION    ASPC
       EXTRAPOLATION_ORDER 4
     &END QS
@@ -44,13 +45,13 @@
       EPS_SCF      ${EPS_SCF}
       MAX_SCF      ${MAX_SCF}
       &OT
-        MINIMIZER           CG
-        LINESEARCH          2PNT
-        PRECONDITIONER      FULL_ALL
-        ENERGY_GAP          0.001
+        MINIMIZER           DIIS
+        LINESEARCH          3PNT
+        PRECONDITIONER      FULL_SINGLE_INVERSE
+        ENERGY_GAP          0.08
       &END OT
       &OUTER_SCF
-        MAX_SCF    30
+        MAX_SCF    20
         EPS_SCF    ${EPS_SCF}
       &END OUTER_SCF
       &PRINT

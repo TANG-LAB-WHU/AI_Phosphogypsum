@@ -60,9 +60,9 @@ KIND_DEFINITIONS = {
 }
 
 INP_TEMPLATE = """@SET PROJECT_NAME {PROJECT_NAME}
-@SET EPS_SCF 1.5E-6
+@SET EPS_SCF 1.0E-5
 @SET CUT_OFF 420
-@SET MAX_SCF 200
+@SET MAX_SCF 60
 
 &GLOBAL
   PROJECT_NAME  ${{PROJECT_NAME}}
@@ -88,6 +88,7 @@ INP_TEMPLATE = """@SET PROJECT_NAME {PROJECT_NAME}
     &QS
       METHOD           GPW
       EPS_DEFAULT      1.0E-12
+      EPS_PGF_ORB      1.0E-14
       EXTRAPOLATION    ASPC
       EXTRAPOLATION_ORDER 4
     &END QS
@@ -105,13 +106,13 @@ INP_TEMPLATE = """@SET PROJECT_NAME {PROJECT_NAME}
       EPS_SCF      ${{EPS_SCF}}
       MAX_SCF      ${{MAX_SCF}}
       &OT
-        MINIMIZER           CG
-        LINESEARCH          2PNT
-        PRECONDITIONER      FULL_ALL
-        ENERGY_GAP          0.001
+        MINIMIZER           DIIS
+        LINESEARCH          3PNT
+        PRECONDITIONER      FULL_SINGLE_INVERSE
+        ENERGY_GAP          0.08
       &END OT
       &OUTER_SCF
-        MAX_SCF    30
+        MAX_SCF    20
         EPS_SCF    ${{EPS_SCF}}
       &END OUTER_SCF
       &PRINT
@@ -247,13 +248,15 @@ echo "========================================================================"
 
 for dir in "${{SUBDIRS[@]}}"; do
     if [ -d "$dir" ]; then
-        echo -n "Submitting job in $dir ... "
         cd "$dir"
-        if [ -f "run_cp2k.slurm" ]; then
+        if compgen -G "*FINAL*" > /dev/null; then
+            echo "[$dir] SKIPPING: Already completed and converged (FINAL file exists)."
+        elif [ -f "run_cp2k.slurm" ]; then
+            echo -n "[$dir] Submitting job ... "
             JOB_ID=$(sbatch run_cp2k.slurm | awk '{{print $NF}}')
             echo "Submitted! Job ID: $JOB_ID"
         else
-            echo "ERROR: run_cp2k.slurm not found in $dir"
+            echo "[$dir] ERROR: run_cp2k.slurm not found."
         fi
         cd ..
     else
@@ -281,9 +284,9 @@ def main():
         
         print(f"\nProcessing: {src_sub} -> {dst_sub}")
         
-        # 1. Clean up old relics
+        # 1. Clean up old relics (preserve completed final results)
         for f in os.listdir(dst_dir):
-            if f not in [f"{dst_sub}.xyz", "geo_opt.inp", "run_cp2k.slurm"]:
+            if f not in [f"{dst_sub}.xyz", "geo_opt.inp", "run_cp2k.slurm"] and not ("FINAL" in f or f.endswith(".cif")):
                 p = os.path.join(dst_dir, f)
                 if os.path.isfile(p):
                     os.remove(p)

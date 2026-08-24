@@ -23,13 +23,15 @@ echo "========================================================================"
 
 for dir in "${SUBDIRS[@]}"; do
     if [ -d "$dir" ]; then
-        echo -n "Submitting job in $dir ... "
         cd "$dir"
-        if [ -f "run_cp2k.slurm" ]; then
+        if compgen -G "*FINAL*" > /dev/null; then
+            echo "[$dir] SKIPPING: Already completed and converged (FINAL file exists)."
+        elif [ -f "run_cp2k.slurm" ]; then
+            echo -n "[$dir] Submitting job ... "
             JOB_ID=$(sbatch run_cp2k.slurm | awk '{print $NF}')
             echo "Submitted! Job ID: $JOB_ID"
         else
-            echo "ERROR: run_cp2k.slurm not found in $dir"
+            echo "[$dir] ERROR: run_cp2k.slurm not found."
         fi
         cd ..
     else
