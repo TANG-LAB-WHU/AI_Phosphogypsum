@@ -249,9 +249,12 @@ echo "========================================================================"
 for dir in "${{SUBDIRS[@]}}"; do
     if [ -d "$dir" ]; then
         cd "$dir"
-        if compgen -G "*FINAL*" > /dev/null; then
-            echo "[$dir] SKIPPING: Already completed and converged (FINAL file exists)."
+        if grep -q "GEOMETRY OPTIMIZATION COMPLETED" geo_opt.out 2>/dev/null; then
+            echo "[$dir] SKIPPING: Already completed and converged."
         elif [ -f "run_cp2k.slurm" ]; then
+            if [ -f "geo_opt.out" ]; then
+                mv geo_opt.out geo_opt_step1_300.out 2>/dev/null || true
+            fi
             echo -n "[$dir] Submitting job ... "
             JOB_ID=$(sbatch run_cp2k.slurm | awk '{{print $NF}}')
             echo "Submitted! Job ID: $JOB_ID"
