@@ -1,9 +1,7 @@
 &EXT_RESTART
   RESTART_FILE_NAME  gypsum_slab_nh4_geoopt-1.restart
-  RESTART_POS  .TRUE.
+  RESTART_POS        .TRUE.
   RESTART_COUNTERS   .FALSE.
-  RESTART_WFN        .TRUE.
-  RESTART_HESSIAN    .TRUE.
 &END EXT_RESTART
 
 @SET PROJECT_NAME gypsum_slab_nh4_geoopt
@@ -141,7 +139,8 @@
     RMS_DR      1.5E-3
     RMS_FORCE   3.0E-4
     &BFGS
-      TRUST_RADIUS 0.15
+      TRUST_RADIUS    0.15
+      RESTART_HESSIAN .TRUE.
     &END BFGS
   &END GEO_OPT
   &PRINT
