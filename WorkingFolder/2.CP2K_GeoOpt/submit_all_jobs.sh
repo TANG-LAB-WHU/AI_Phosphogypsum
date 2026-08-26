@@ -24,14 +24,24 @@ echo "========================================================================"
 for dir in "${SUBDIRS[@]}"; do
     if [ -d "$dir" ]; then
         cd "$dir"
+        # Check if already converged in geo_opt.out or geo_opt_step1_300.out
         if grep -q "GEOMETRY OPTIMIZATION COMPLETED" geo_opt.out 2>/dev/null; then
-            echo "[$dir] SKIPPING: Already completed and converged."
+            echo "[$dir] SKIPPING: Already completed and converged in geo_opt.out."
+        elif grep -q "GEOMETRY OPTIMIZATION COMPLETED" geo_opt_step1_300.out 2>/dev/null; then
+            echo "[$dir] SKIPPING: Already completed and converged in geo_opt_step1_300.out."
         elif [ -f "run_cp2k.slurm" ]; then
-            # If geo_opt.out exists but not converged, archive it before restart
+            # Clean up aborted / crashed 0-step outputs (<100 lines) if any
             if [ -f "geo_opt.out" ]; then
-                mv geo_opt.out geo_opt_step1_300.out 2>/dev/null || true
+                line_count=$(wc -l < geo_opt.out 2>/dev/null || echo 0)
+                if [ "$line_count" -lt 100 ]; then
+                    rm -f geo_opt.out
+                elif [ ! -f "geo_opt_step1_300.out" ]; then
+                    mv geo_opt.out geo_opt_step1_300.out 2>/dev/null || true
+                else
+                    mv geo_opt.out "geo_opt_$(date +%Y%m%d_%H%M%S).out" 2>/dev/null || true
+                fi
             fi
-            echo -n "[$dir] Submitting job ... "
+            echo -n "[$dir] Submitting restart job ... "
             JOB_ID=$(sbatch run_cp2k.slurm | awk '{print $NF}')
             echo "Submitted! Job ID: $JOB_ID"
         else
@@ -44,5 +54,5 @@ for dir in "${SUBDIRS[@]}"; do
 done
 
 echo "========================================================================"
-echo "All jobs submitted! Use 'squeue -u $USER' to monitor status."
+echo "All restart jobs submitted! Use 'squeue -u $USER' to monitor status."
 echo "========================================================================"

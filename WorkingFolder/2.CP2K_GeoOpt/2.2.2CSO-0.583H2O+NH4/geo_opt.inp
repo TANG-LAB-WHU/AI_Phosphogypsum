@@ -49,7 +49,7 @@
     &END POISSON
 
     &SCF
-      SCF_GUESS    ATOMIC
+      SCF_GUESS    RESTART
       EPS_SCF      ${EPS_SCF}
       MAX_SCF      ${MAX_SCF}
       &OT
@@ -135,13 +135,13 @@
   &GEO_OPT
     TYPE        MINIMIZATION
     OPTIMIZER   BFGS
-    MAX_ITER    300
+    MAX_ITER    500
     MAX_DR      3.0E-3
     MAX_FORCE   4.5E-4
     RMS_DR      1.5E-3
     RMS_FORCE   3.0E-4
     &BFGS
-      TRUST_RADIUS 0.2
+      TRUST_RADIUS 0.15
     &END BFGS
   &END GEO_OPT
   &PRINT
