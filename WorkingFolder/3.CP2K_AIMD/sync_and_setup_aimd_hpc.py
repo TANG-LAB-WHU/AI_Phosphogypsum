@@ -15,7 +15,6 @@ import os
 import glob
 import re
 from collections import Counter
-from ase.io import read
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
@@ -324,17 +323,36 @@ def main():
                 if os.path.isfile(p):
                     os.remove(p)
                     
-        # 2. Find source structure
-        xyz_candidates = [
-            os.path.join(geo_dir, f"{src_geo}.xyz"),
-            os.path.join(geo_dir, "optimized_structure_extxyz_wrap.xyz"),
-        ]
+        # 2. Find source structure (strictly pick the latest final structure from geo_opt.out or Stage 2)
         source_xyz = None
-        for c in xyz_candidates:
-            if os.path.exists(c):
-                source_xyz = c
-                break
-                
+        main_out = os.path.join(geo_dir, "geo_opt.out")
+        if os.path.exists(main_out):
+            with open(main_out, "r", encoding="utf-8", errors="ignore") as f:
+                out_txt = f.read()
+            m_xyz = re.search(r'writing XYZ file gladly:\s*\n\s*([^\s\n]+\.xyz)', out_txt)
+            if m_xyz:
+                c = os.path.join(geo_dir, m_xyz.group(1).strip())
+                if os.path.exists(c):
+                    source_xyz = c
+                    print(f"   [Source] Picked from geo_opt.out: {os.path.basename(source_xyz)}")
+        
+        if not source_xyz:
+            final_xyzs = glob.glob(os.path.join(geo_dir, "*FINAL*.xyz"))
+            if final_xyzs:
+                # Sort by mtime
+                final_xyzs.sort(key=lambda p: os.path.getmtime(p))
+                source_xyz = final_xyzs[-1]
+                print(f"   [Source] Found optimized structure: {os.path.basename(source_xyz)}")
+            else:
+                xyz_candidates = [
+                    os.path.join(geo_dir, f"{src_geo}.xyz"),
+                    os.path.join(geo_dir, "optimized_structure_extxyz_wrap.xyz"),
+                ]
+                for c in xyz_candidates:
+                    if os.path.exists(c):
+                        source_xyz = c
+                        break
+                    
         if not source_xyz:
             mc_sub = src_geo.replace("2.", "1.")
             mc_xyzs = glob.glob(os.path.join(MODELCONFIG_DIR, mc_sub, "*.xyz"))

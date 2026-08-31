@@ -1,7 +1,7 @@
 #!/bin/bash
 # ==============================================================================
 # Master Batch Submission Script for WHU-HPC Slurm Cluster
-# Submits all 10 CP2K AIMD Simulation Jobs (180 Â°C, Partition: 9a14a)
+# Submits all 10 CP2K AIMD Simulation Jobs (180 ¡ãC, Partition: 9a14a)
 # ==============================================================================
 
 SUBDIRS=(
@@ -18,7 +18,7 @@ SUBDIRS=(
 )
 
 echo "========================================================================"
-echo " Submitting 10 CP2K AIMD Jobs to WHU-HPC (180 Â°C, Partition: 9a14a)..."
+echo " Submitting 10 CP2K AIMD Jobs to WHU-HPC (180 ¡ãC, Partition: 9a14a)..."
 echo "========================================================================"
 
 for dir in "${SUBDIRS[@]}"; do
