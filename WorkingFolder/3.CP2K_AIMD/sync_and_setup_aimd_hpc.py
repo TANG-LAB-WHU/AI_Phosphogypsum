@@ -323,80 +323,60 @@ def main():
                 if os.path.isfile(p):
                     os.remove(p)
                     
-        # 2. Find source structure (strictly pick the latest final structure from geo_opt.out or Stage 2)
-        source_xyz = None
-        main_out = os.path.join(geo_dir, "geo_opt.out")
-        if os.path.exists(main_out):
-            with open(main_out, "r", encoding="utf-8", errors="ignore") as f:
-                out_txt = f.read()
-            m_xyz = re.search(r'writing XYZ file gladly:\s*\n\s*([^\s\n]+\.xyz)', out_txt)
-            if m_xyz:
-                c = os.path.join(geo_dir, m_xyz.group(1).strip())
-                if os.path.exists(c):
-                    source_xyz = c
-                    print(f"   [Source] Picked from geo_opt.out: {os.path.basename(source_xyz)}")
+        # 2. Extract authentic optimized structure and lattice
+        pos_files = glob.glob(os.path.join(geo_dir, "*-pos-1.xyz"))
+        if not pos_files:
+            raise FileNotFoundError(f"Could not locate trajectory file *-pos-1.xyz in {geo_dir}")
+        pos_file = pos_files[0]
         
-        if not source_xyz:
-            final_xyzs = glob.glob(os.path.join(geo_dir, "*FINAL*.xyz"))
-            if final_xyzs:
-                # Sort by mtime
-                final_xyzs.sort(key=lambda p: os.path.getmtime(p))
-                source_xyz = final_xyzs[-1]
-                print(f"   [Source] Found optimized structure: {os.path.basename(source_xyz)}")
-            else:
-                xyz_candidates = [
-                    os.path.join(geo_dir, f"{src_geo}.xyz"),
-                    os.path.join(geo_dir, "optimized_structure_extxyz_wrap.xyz"),
-                ]
-                for c in xyz_candidates:
-                    if os.path.exists(c):
-                        source_xyz = c
-                        break
-                    
-        if not source_xyz:
-            mc_sub = src_geo.replace("2.", "1.")
-            mc_xyzs = glob.glob(os.path.join(MODELCONFIG_DIR, mc_sub, "*.xyz"))
-            if mc_xyzs:
-                source_xyz = mc_xyzs[0]
-            else:
-                raise FileNotFoundError(f"Could not locate source structure for {src_geo}")
-                
-        with open(source_xyz, "r") as f:
-            base_lines = f.readlines()
+        with open(pos_file, "r", encoding="utf-8", errors="ignore") as f:
+            lines = f.readlines()
             
-        atom_count = int(base_lines[0].strip())
-        comment = base_lines[1].strip()
+        atom_count = int(lines[0].strip())
+        frame_len = atom_count + 2
+        last_frame_lines = lines[-frame_len:]
+        coord_raw_lines = last_frame_lines[2:]
+        print(f"   [Source] Extracted final step from {os.path.basename(pos_file)} ({atom_count} atoms)")
         
-        # Extract lattice
-        m = re.search(r'Lattice="([^"]+)"', comment)
-        if not m:
-            raise ValueError(f"Could not find Lattice in {source_xyz}")
-        lattice_str = m.group(1)
-        lat_vals = lattice_str.split()
-        a1, a2, a3 = lat_vals[0], lat_vals[1], lat_vals[2]
-        b1, b2, b3 = lat_vals[3], lat_vals[4], lat_vals[5]
-        c1, c2, c3 = lat_vals[6], lat_vals[7], lat_vals[8]
+        # Extract lattice from geo_opt.inp
+        inp_path = os.path.join(geo_dir, "geo_opt.inp")
+        with open(inp_path, "r", encoding="utf-8", errors="ignore") as f:
+            txt = f.read()
+            
+        m_a = re.search(r'^\s*A\s+([0-9\.\+\-E]+)\s+([0-9\.\+\-E]+)\s+([0-9\.\+\-E]+)', txt, re.M)
+        m_b = re.search(r'^\s*B\s+([0-9\.\+\-E]+)\s+([0-9\.\+\-E]+)\s+([0-9\.\+\-E]+)', txt, re.M)
+        m_c = re.search(r'^\s*C\s+([0-9\.\+\-E]+)\s+([0-9\.\+\-E]+)\s+([0-9\.\+\-E]+)', txt, re.M)
+        
+        if not (m_a and m_b and m_c):
+            raise ValueError(f"Could not extract cell vectors from {inp_path}")
+            
+        a1, a2, a3 = m_a.group(1), m_a.group(2), m_a.group(3)
+        b1, b2, b3 = m_b.group(1), m_b.group(2), m_b.group(3)
+        c1, c2, c3 = m_c.group(1), m_c.group(2), m_c.group(3)
+        lattice_str = f"{float(a1):.10f} {float(a2):.10f} {float(a3):.10f} {float(b1):.10f} {float(b2):.10f} {float(b3):.10f} {float(c1):.10f} {float(c2):.10f} {float(c3):.10f}"
         
         # Format coordinate lines
-        coords_lines = base_lines[2:2+atom_count]
         standard_header = [
             f"{atom_count}\n",
             f'Lattice="{lattice_str}" Properties=species:S:1:pos:R:3 pbc="T T F"\n'
         ]
         formatted_coords = []
-        for l in coords_lines:
+        for l in coord_raw_lines:
             parts = l.split()
             if len(parts) >= 4:
                 sym = parts[0]
                 x, y, z = float(parts[1]), float(parts[2]), float(parts[3])
                 formatted_coords.append(f"{sym:<4} {x:18.10f} {y:18.10f} {z:18.10f}\n")
                 
+        if len(formatted_coords) != atom_count:
+            raise ValueError(f"Formatted coords count {len(formatted_coords)} does not match atom count {atom_count}")
+            
         out_lines = standard_header + formatted_coords
         
         # Write structure file named <dst_aimd>.xyz
         xyz_name = f"{dst_aimd}.xyz"
         out_xyz_path = os.path.join(dst_dir, xyz_name)
-        with open(out_xyz_path, "w") as f:
+        with open(out_xyz_path, "w", encoding="utf-8") as f:
             f.writelines(out_lines)
         print(f"   [Structure] Wrote {atom_count} atoms -> {xyz_name}")
         
