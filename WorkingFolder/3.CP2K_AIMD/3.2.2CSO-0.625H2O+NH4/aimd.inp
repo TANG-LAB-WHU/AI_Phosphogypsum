@@ -48,11 +48,10 @@
       SCF_GUESS    ATOMIC
       IGNORE_CONVERGENCE_FAILURE
       &OT
-        MINIMIZER       DIIS
-        PRECONDITIONER  FULL_SINGLE_INVERSE
-        ENERGY_GAP      0.001
-        STEPSIZE        0.15
-        PRECOND_SOLVER  INVERSE_UPDATE
+        MINIMIZER           DIIS
+        LINESEARCH          3PNT
+        PRECONDITIONER      FULL_SINGLE_INVERSE
+        ENERGY_GAP          0.08
       &END OT
       &OUTER_SCF
         MAX_SCF     10

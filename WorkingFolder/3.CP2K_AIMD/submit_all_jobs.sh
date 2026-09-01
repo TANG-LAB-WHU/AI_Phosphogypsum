@@ -26,6 +26,10 @@ for dir in "${SUBDIRS[@]}"; do
         echo -n "Submitting AIMD job in $dir ... "
         cd "$dir"
         if [ -f "run_cp2k.slurm" ]; then
+            # Clean old failed logs if aborted previously
+            if [ -f "aimd.out" ] && grep -q "ABORT" aimd.out 2>/dev/null; then
+                rm -f aimd.out slurm-*.out slurm-*.error
+            fi
             JOB_ID=$(sbatch run_cp2k.slurm | awk '{print $NF}')
             echo "Submitted! Job ID: $JOB_ID"
         else
