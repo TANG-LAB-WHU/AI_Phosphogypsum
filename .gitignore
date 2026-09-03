@@ -13,6 +13,16 @@ optimization_trajectory.xyz
 *.bak-*
 *.tmp
 
+# CP2K AIMD simulation outputs & large trajectories
+WorkingFolder/3.CP2K_AIMD/**/*.out
+WorkingFolder/3.CP2K_AIMD/**/*.cell
+WorkingFolder/3.CP2K_AIMD/**/*.ener
+WorkingFolder/3.CP2K_AIMD/**/*.error
+WorkingFolder/3.CP2K_AIMD/**/*-frc-*.xyz
+WorkingFolder/3.CP2K_AIMD/**/*-pos-*.xyz
+WorkingFolder/3.CP2K_AIMD/**/*-vel-*.xyz
+WorkingFolder/3.CP2K_AIMD/**/slurm-*
+
 # Python artifacts
 **/__pycache__/
 *.py[cod]
