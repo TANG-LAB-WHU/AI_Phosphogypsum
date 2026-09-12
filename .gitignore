@@ -47,3 +47,10 @@ testing/
 
 # Documentation and helper notes
 HELP_docs/
+
+# Manuscript outlines, review drafts, and agency-agents analyses
+PG_to_HAP_Outline*
+PG to HAP Outline*
+manuscript_review_*.md
+scientific_questions_analysis.md
+*.docx
