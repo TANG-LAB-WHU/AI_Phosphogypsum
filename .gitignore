@@ -57,4 +57,10 @@ scientific_questions_analysis.md
 
 # Reference guides and PDFs
 esthag_authguide.pdf
+
+# Monitoring and local utility scripts
+WorkingFolder/3.CP2K_AIMD/monitor_aimd.py
+WorkingFolder/3.CP2K_AIMD/analyze_aimd_runs.py
+WorkingFolder/3.CP2K_AIMD/check_*.py
+generate_manuscript.py
 
