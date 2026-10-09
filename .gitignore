@@ -61,3 +61,12 @@ WorkingFolder/3.CP2K_AIMD/analyze_aimd_runs.py
 WorkingFolder/3.CP2K_AIMD/check_*.py
 generate_manuscript.py
 
+
+# Origin plotting data
+WorkingFolder/3.CP2K_AIMD/Origin_Plot_Data/
+
+# Analysis and figure export scripts and JSON summaries
+WorkingFolder/3.CP2K_AIMD/aimd_kinetics_and_bonds_summary.json
+WorkingFolder/3.CP2K_AIMD/calc_kinetics_and_bonds.py
+WorkingFolder/3.CP2K_AIMD/detailed_aimd_table_metrics.json
+WorkingFolder/3.CP2K_AIMD/export_figure4_origin_data.py
