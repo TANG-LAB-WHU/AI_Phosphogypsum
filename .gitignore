@@ -70,3 +70,13 @@ WorkingFolder/3.CP2K_AIMD/aimd_kinetics_and_bonds_summary.json
 WorkingFolder/3.CP2K_AIMD/calc_kinetics_and_bonds.py
 WorkingFolder/3.CP2K_AIMD/detailed_aimd_table_metrics.json
 WorkingFolder/3.CP2K_AIMD/export_figure4_origin_data.py
+
+WorkingFolder/3.CP2K_AIMD/generate_aimd_report_doc.py
+WorkingFolder/3.CP2K_AIMD/AIMD_Figure4_Comprehensive_Report.docx
+
+WorkingFolder/3.CP2K_AIMD/AIMD Figure/
+
+# 5.20 meeting presentation, extracted media, and scratch files
+5.20 meeting/
+WorkingFolder/meeting_520_extracted/
+pptx_extracted_text.txt
