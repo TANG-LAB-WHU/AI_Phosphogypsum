@@ -84,3 +84,6 @@ WorkingFolder/3.CP2K_AIMD/export_figure_s4_po_data.py
 
 # AIMD figure exports and graphics
 AIMD Figure/
+
+# Supporting Information extracted images
+WorkingFolder/SI_extracted_images/
